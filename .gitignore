@@ -4,7 +4,6 @@
 /web/core/
 /web/modules/contrib/
 /web/profiles/contrib/
-../composer.lock
 
 # Ignore sensitive information
 /web/sites/*/settings.php
@@ -18,10 +17,10 @@
 /web/sites/simpletest
 
 # Ignore database and compressed files
-*.sql
+# *.sql
 *.sqlite
 *.tar
-*.gz
+#*.gz
 
 # Ignore NetBeans generated files.
 nbproject/
@@ -58,4 +57,4 @@ node_modules/
 #config/sync/xmlsitemap.xmlsitemap.*.yml
 
 # Ignore theme style.css which will be build on deployment.
-web/themes/custom/*/css/*
+# web/themes/custom/*/css/*
