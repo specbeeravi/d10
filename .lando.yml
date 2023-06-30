@@ -2,3 +2,15 @@ name: d10
 recipe: drupal10
 config:
   webroot: web
+proxy:
+  appserver:
+    - d10.lndo.site
+  search:
+    - d10-solr.lndo.site
+services:
+  search:
+    type: solr:8
+    core: drupal9
+    portforward: true
+    config:
+      dir: .lando/8.x-conf
