@@ -1,0 +1,11 @@
+// Sub theme styling.
+@import 'variables_drupal';
+
+// Bootstrap overriden variables.
+// @see https://getbootstrap.com/docs/5.2/customize/sass/#variable-defaults.
+@import 'variables_bootstrap';
+
+@import 'subtheme_changes';
+
+// Include bootstrap.
+@import '../../../../themes/contrib/bootstrap5/scss/style';
