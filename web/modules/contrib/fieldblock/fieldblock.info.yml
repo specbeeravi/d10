@@ -1,0 +1,12 @@
+name: Field as Block
+description: 'Display fields of the current entity as blocks.'
+type: module
+core_version_requirement: ^8.7.7 || ^9 || ^10
+dependencies:
+  - drupal:block
+configure: fieldblock.field_block_config_form
+
+# Information added by Drupal.org packaging script on 2023-02-01
+version: '8.x-2.2'
+project: 'fieldblock'
+datestamp: 1675273339
