@@ -1,0 +1,20 @@
+uuid: f15d9ff2-da69-49ff-8ddf-208f2850ba61
+langcode: en
+status: true
+dependencies:
+  theme:
+    - power_portfolio
+id: tabs
+theme: power_portfolio
+region: content
+weight: -4
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: Tabs
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: true
+visibility: {  }

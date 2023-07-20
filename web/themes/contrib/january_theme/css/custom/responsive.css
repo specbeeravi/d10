@@ -1,0 +1,414 @@
+@media screen and (min-width: 992px){
+	.tab-contents .tab-nav-item{
+		display: none;
+	}
+}
+@media screen and (max-width: 1399px){
+	html{
+		font-size: 80%;
+	}
+	.case-study-sec{
+		padding: 0;
+	}
+	.about-sec:before{
+		margin-left: 0;
+		left: 0;
+	}
+}
+@media screen and (max-width: 1299px){
+	
+	.hero-banner
+	{
+		padding: 20.5rem 0px 12.5rem 0px;
+	}
+}
+@media screen and (max-width: 1199px){
+	.banner-content
+	{
+		max-width: 60%;
+	}
+}
+@media screen and (max-width: 991px){
+	.hero-banner
+	{
+		padding: 12.5rem 0px 12.5rem 0px;
+	}
+	.get-to-know h2
+	{
+		margin-bottom: 20px;
+	}
+	.our-goal-image
+	{
+		margin-bottom: 20px;
+	}
+	.banner-content
+	{
+		max-width:unset;
+	}
+	.section-spacing{
+		padding: 3rem 0;
+	}
+	.get-to-know,.our-services-wrappp-inner
+	{
+		margin-bottom: 3rem;
+	}
+	.custom-tabs .tab-nav{
+		display: none;
+	}
+	.about-sec .content-wrapper
+	{
+		padding-left: 0;
+	}
+	.content-wrapper{
+		padding-top: 3.5rem;
+	}
+	.tab-contents .tab-content .img-wrapper
+	{
+		max-width: unset;
+	}
+	.tab-contents .tab-content .img-wrapper img
+	{
+		width: 100%;
+	}
+	.navbar-collapse
+	{
+		max-width: 300px;
+		padding: 10px 20px;
+	}
+	.topbar
+	{
+		font-size: 12px;
+		text-align: center;
+		padding: 10px 0px;
+	}
+	.topbar a i
+	{
+		font-size: 15px;
+	}
+	.site-branding__text a
+	{
+		font-size: 37px;		
+	}
+	.topbar .social-links
+	{
+		justify-content: center;
+		margin-top: 10px;
+	}
+	.open-icon
+	{
+		width: 40px;
+		height: 20px;
+	}
+	.close-icon
+	{
+		width: 30px;
+		height: 27px;
+	}
+	.tab-contents .tab-content .content-wrapper
+	{
+		padding-bottom:30px;
+		padding-top:0px;
+	}
+	.tab-contents .tab-nav-item
+	{
+		margin-bottom: 0;
+		border-bottom:1px solid #C0C1B4;
+	}
+	.case-study-sec .inner-bg{
+		padding: 3rem 0 10rem;
+	}
+	.partner-sec .img-wrapper{
+		margin-top: -10rem;
+	}
+	.partner-sec h2:before{
+		top: -10rem;
+		left: 2rem;
+		width: 2px;
+		height: 10rem;
+	}
+	.testimonial-sec .testimonial-heading{
+		margin-bottom: 1.5rem;
+	}
+	.site-footer{
+		padding: 2.5rem 0 1rem;
+	}
+
+
+	.small-banner img{
+		height: 16rem;
+	}
+	.our-services-wrappp-inner .img-wrapper img,.our-services-wrappp-inner .img-wrapper
+	{
+		max-width: 100%;
+		width: 100%;
+	}
+	.our-services-wrappp-inner .content-wrapper
+	{
+		padding-top:0;
+		margin-bottom: 30px;
+	}
+}
+@media screen and (max-width: 767px){
+	.breadcrumb
+	{
+		margin-top: 15px;
+	}
+	.page-title h1
+	{
+		font-size: 2rem;
+		line-height: 3.25rem;
+	}
+	.post-title,.case-title
+	{
+		font-size: 1.5rem;
+	}
+	.top-toolbar .views-exposed-form
+	{
+		display: block;
+	}
+	.top-toolbar .views-exposed-form>div
+	{
+		margin:10px 0;
+		
+	}
+	.img-wrapper a
+	{
+		display: block;
+	}
+	.top-toolbar .views-exposed-form>div select
+	{
+		width: 100%;
+	}
+	.top-toolbar .views-exposed-form .js-form-item-title, .top-toolbar .views-exposed-form .js-form-item-search
+	{
+		margin-left: 0;
+	}
+	.top-toolbar .views-exposed-form .js-form-item-title input, .top-toolbar .views-exposed-form .js-form-item-search input
+	{
+		 width: 100%;
+		 max-width: unset;
+	}
+	h2{
+		font-size: 2.5rem;
+		line-height: 1.5;
+	}
+	.small-banner
+	{
+		padding: 80px 0px;
+	}
+	.our-goal-image
+	{
+		margin-top: 50px;
+	}
+	.icon-button {
+		font-size: 1rem;
+	}
+	.icon-button .icon{
+		width: 3rem;
+		height: 3rem;
+	}
+
+	.banner-content h1{
+		font-size: 2.25rem;
+		line-height: 1.5;
+	}
+
+	.about-sec:before{
+		content: none;
+	}
+	.since-content b{
+		font-size: 3rem;
+	}
+
+	.content-wrapper .icon-button{
+		margin-top: 1rem;
+	}
+	.professional-details{
+		font-size: 0.875rem;
+	}
+	.professional-details h4{
+		font-size: 1rem;
+	}
+
+	.service-sec h2{
+		margin-bottom: 2rem;
+	}
+
+	.blog-slider .item .inner-wrapper{
+		padding: 1rem;
+	}
+	.blog-details h4{
+		font-size: 1.25rem;
+	}
+
+	.top-toolbar{
+		flex-direction: column;
+	}
+	.result-counts{
+		order: 10;
+		width: 100%;
+		text-align: left;
+	}
+	.top-toolbar > div{
+		width: 100%;
+		margin-bottom: 0.625rem;
+		padding-right: 0;
+	}
+	.top-toolbar > div.result-counts{
+		margin-bottom: 0;
+		margin-top: 0.625rem;
+	}
+	.top-toolbar > div:last-child{
+		margin-bottom: 0;
+	}
+	.search-form{
+		width: 100%;
+	}
+	.search-form .form-group{
+		max-width: 100%;
+		width: calc(100% - 100px);
+	}
+	.sorting-option label, .search-form label{
+		width: 100px;
+	}
+	.sorting-option select{
+		width: calc(100% - 100px);
+	}
+
+	.professional-list .item{
+		margin-bottom: 1.75rem;
+	}
+
+	.left-sidebar{
+		position: static;
+		top: 0;
+		margin-bottom: 1.25rem;
+	}
+	.profile-sec{
+		text-align: center;
+	}
+	.profile-sec .social-links{
+		justify-content: center;
+	}
+
+	.right-sidebar{
+		margin-top: 1.25rem;
+	}
+	.right-sidebar .search-form .form-group{
+		width: 100%;
+	}
+
+}
+
+@media screen and (max-width: 575px){
+	.post-title,.case-title
+	{
+		font-size: 1.25rem;
+	}
+	.page-title h1
+	{
+		font-size: 1.5rem;
+	}
+	
+	.professional-details>*
+	{
+		flex: 0 0 50%;
+	}
+	.professional-sec img,.case-study-sec .img-wrapper img,.blog-sec .img-wrapper img
+	{
+		width: 100%;
+	}
+	.professional-sec .img-wrapper a,.case-study-sec .img-wrapper a,.blog-sec .img-wrapper a
+	{
+		display:block;
+	}
+	.footer-quick-link
+	{
+		margin-bottom: 35px;
+		max-width: unset;
+	}
+	.designerdby
+	{
+		margin-top: 15px;
+	}
+	.footer-quick-link #block-quicklinks ul
+	{
+		margin: 0px -10px;
+	}
+	.footer-quick-link #block-quicklinks ul li
+	{
+		padding: 0px 10px;
+	}
+	.footer-contact
+	{
+		margin-bottom: 35px;
+	}
+	.professional-details div:last-child
+	{
+		justify-content: flex-end;
+	}
+	.hero-banner
+	{
+		padding:6.5rem 0px 6.5rem 0px;
+	}
+	h2{
+		font-size: 2rem;
+	}
+	h3{
+		font-size: 1.5rem;
+		line-height: 1.5;
+	}
+
+	.section-spacing{
+		padding: 2.25rem 0;
+	}
+
+	.title-with-button{
+		margin-bottom: 1.5rem;
+	}
+
+	.slick-list{
+		margin: 0 -0.625rem;
+	}
+	.slick-list .item{
+		padding: 0 .625rem;
+	}
+
+	.case-study-sec .inner-bg{
+		padding: 2.25rem 0 10rem;
+	}
+
+	.small-banner img{
+		height: 14rem;
+	}
+
+	.page-title .inner-right{
+		text-align: center;
+	}
+	.page-title .inner-right .breadcrumb{
+		justify-content: center;
+	}
+	.page-title .inner-left{
+		text-align: center;
+	}
+	.page-title .inner-left .breadcrumb{
+		justify-content: center;
+	}
+	.page-title h1{
+		font-size: 2rem;
+		line-height: 1.1;
+	}
+
+	.full-content .custom-list li{
+		width: 100%;
+		padding-right: 0;
+	}
+	
+
+
+
+
+
+
+
+}

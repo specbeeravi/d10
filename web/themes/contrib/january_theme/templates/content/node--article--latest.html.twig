@@ -1,0 +1,15 @@
+{% if content.field_media_image %}
+<a href="{{ url }}" class="img-wrapper">
+  <img src="{{ file_url(content.field_media_image[0]['#media'].field_media_image.entity.uri.value) }}" alt="Blog Image">
+</a>
+{% endif %}
+{% if label or date %}
+<div class="blog-details">
+  {% if label %}
+  <h4><a href="{{ url }}">{{ label }}</a></h4>
+  {% endif %}
+  {% if date %}
+  <div class="date"><i class="fa-regular fa-calendar"></i> {{ date|date("d-m-Y") }}</div>
+  {% endif %}
+</div>
+{% endif %}

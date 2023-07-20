@@ -1,0 +1,24 @@
+name: Power Portfolio
+description: Power Portfolio Fully responsive theme provide <b>Banner with Cards, 2 level menu, Footer Copyright, Arrow up Left/right, Social Media Icon, Contact us Information.</b><br>Developed BY <b><a href="https://www.drupal.org/u/ashutosh-ahirwal">Ashutosh Ahirwal</a></b>.
+type: theme
+core_version_requirement: ^9.2 || ^10
+preprocess: true
+base theme: false
+
+libraries:
+  - power_portfolio/global-styling
+
+regions:
+  header: Header/Logo
+  nav_main: 'Main navigation region'
+  content: 'Main content'
+  sidebar_first: 'Sidebar first'
+  footer_first: 'Footer First'
+  footer_menu1: 'Footer Menu 1'
+  footer_menu2: 'Footer Menu 2'
+  footer_email: 'Footer Email'
+
+# Information added by Drupal.org packaging script on 2023-07-07
+version: '9.0.0-beta1'
+project: 'power_portfolio'
+datestamp: 1688728354

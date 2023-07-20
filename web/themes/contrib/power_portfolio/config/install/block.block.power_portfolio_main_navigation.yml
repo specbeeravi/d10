@@ -1,0 +1,27 @@
+uuid: a42d6970-e257-4db2-8df4-5dd7ab0fbc24
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.main
+  module:
+    - system
+  theme:
+    - power_portfolio
+_core:
+  default_config_hash: EFTt3H3X0aop3qTqKSLTeX9hvSPoxPBpRZcsmsQkCx4
+id: power_portfolio_main_navigation
+theme: power_portfolio
+region: nav_main
+weight: 0
+provider: null
+plugin: 'system_menu_block:main'
+settings:
+  id: 'system_menu_block:main'
+  label: 'Main navigation'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: true
+visibility: {  }

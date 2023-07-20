@@ -1,0 +1,32 @@
+@media (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+  /* Header */
+  .menu-wrap .menu a {
+    color: var(--color-heading);
+  }
+  .menu .expanded:hover {
+    background-color: var(--primary);
+  }
+  .page-header {
+    padding: 4rem 0 10rem 0;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 0% 100%);
+  }
+  .page-header::before {
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 0% 100%);
+  }
+  /* Footer */
+  .site-footer {
+    padding-top: 10rem;
+    clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+  }
+  .site-footer::before {
+    clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+  }
+}
+@media (min-width: 992px) {
+  .menu-wrap {
+    background-color: transparent;
+  }
+}

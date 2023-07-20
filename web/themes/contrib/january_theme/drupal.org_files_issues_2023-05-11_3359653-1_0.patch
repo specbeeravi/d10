@@ -1,0 +1,13 @@
+diff --git web/themes/contrib/january_theme/january.theme web/themes/contrib/january_theme/january.theme
+index 144aa6bc..52538d7d 100644
+--- web/themes/contrib/january_theme/january.theme
++++ web/themes/contrib/january_theme/january.theme
+@@ -173,7 +173,7 @@ function january_preprocess_block(&$variables) {
+     }
+   }
+   $request = \Drupal::request();
+-  if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
++  if ($route = $request->attributes->get(\Drupal\Core\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+     $title = \Drupal::service('title_resolver')->getTitle($request, $route);
+     $variables['page__title']=strip_tags($title);
+   }

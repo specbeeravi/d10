@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - book
+  theme:
+    - january
+id: january_book_navigation
+theme: january
+region: sidebar
+weight: 0
+provider: null
+plugin: book_navigation
+settings:
+  id: book_navigation
+  label: 'Book navigation'
+  label_display: visible
+  provider: book
+  block_mode: 'book pages'
+visibility: {  }

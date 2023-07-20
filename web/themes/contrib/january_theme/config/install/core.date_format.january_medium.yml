@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    theme:
+      - january
+id: january_medium
+label: 'january Medium'
+locked: false
+pattern: 'j  F,  Y'

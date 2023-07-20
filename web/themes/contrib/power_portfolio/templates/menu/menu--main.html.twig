@@ -1,0 +1,50 @@
+{#
+/**
+ * @file
+ * Theme override for a main menu.
+ *
+ * Available variables:
+ * - menu_name: The machine name of the menu.
+ * - items: A nested list of menu items. Each menu item contains:
+ *   - attributes: HTML attributes for the menu item.
+ *   - below: The menu item child items.
+ *   - title: The menu link title.
+ *   - url: The menu link URL, instance of Drupal\Core\Url.
+ *   - localized_options: Menu link localized options.
+ */
+#}
+{% import _self as menus %}
+
+{% macro menu_links(items, attributes) %}
+  {% import _self as menus %}
+  {% if items %}
+    <ul>
+      {% for item in items %}
+        {% set classes = [] %}
+        {% if item.below %}
+          {% set classes = classes|merge(['dropdown']) %}
+        {% endif %}
+        {% set classes = classes|merge(item.in_active_trail ? ['active'] : []) %}
+        <li{{ item.attributes.addClass(classes) }}>
+          {% if item.below %}
+            {% set link_attributes = link_attributes.setAttribute('data-bs-toggle', 'dropdown').setAttribute('aria-expanded', 'false') %}
+            <a href="{{item.url}}">
+              {{ item.title }}
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          {% else %}
+            {{ link(item.title, item.url, link_attributes, item.localized_options) }}
+          {% endif %}
+          {{ menus.menu_links(item.below, attributes) }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+
+{% if items %}
+  <nav{{ attributes.addClass('navbar order-last order-lg-0') }} id="navbar">
+    {{ menus.menu_links(items, attributes) }}
+    <i class="bi bi-list mobile-nav-toggle"></i>
+  </nav>
+{% endif %}

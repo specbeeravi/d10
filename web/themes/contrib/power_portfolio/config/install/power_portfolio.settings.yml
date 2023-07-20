@@ -1,0 +1,37 @@
+_core:
+  default_config_hash: nIy9u7xQE69NSgdcDe2WBs_T9qf4MCyrm46vvQhjeyQ
+favicon:
+  use_default: true
+features:
+  comment_user_picture: true
+  comment_user_verification: true
+  favicon: true
+  node_user_picture: true
+logo:
+  use_default: true
+footer_copyright: '© All Rights Reserved.'
+arrow_up: right
+show_information_icon: 1
+address: 'A108 Adam Street NY 535022, USA'
+contact: '+1 5589 55488 55'
+mail_id: ' info@example.com'
+show_social_icon: 1
+facebook_url: 'https://www.facebook.com/'
+twitter_url: 'https://twitter.com/'
+linkedin_url: 'https://www.linkedin.com/'
+instagram_url: 'https://www.instagram.com/'
+youtube_url: 'https://www.youtube.com/'
+banner_display: 1
+banner_title: 'Creative Portfolio with Power Portfolio'
+banner_description: 'VibrantVisions is a cutting-edge custom theme designed to showcase your creative portfolio with style and sophistication.'
+no_of_card: '5'
+card1_icon: file-line
+card1_title: 'Creative Projects'
+card2_icon: brush-line
+card2_title: 'Graphic Design'
+card3_icon: mail-line
+card3_title: 'Communication Purposes'
+card4_icon: user-line
+card4_title: 'User Friendly'
+card5_icon: linkedin-box-line
+card5_title: 'Linkedin Profile'

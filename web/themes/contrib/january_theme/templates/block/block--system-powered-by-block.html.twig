@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * january's implementation to display a block.
+ *
+ * Available variables:
+ * - layout: String that will determine the layout of the block.
+ * - plugin_id: The ID of the block implementation.
+ * - label: The configured label of the block if visible.
+ * - configuration: A list of the block's configuration values.
+ *   - label: The configured label for the block.
+ *   - label_display: The display settings for the label.
+ *   - provider: The module or other provider that provided this block plugin.
+ *   - Block plugin specific settings will also be stored here.
+ * - in_preview: Whether the plugin is being rendered in preview mode.
+ * - content: The content of this block.
+ * - attributes: array of HTML attributes populated by modules, intended to
+ *   be added to the main container tag of this template.
+ *   - id: A valid HTML ID and guaranteed unique.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - content_attributes: Same as attributes, except applied to the main content
+ *   tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ *
+ * @see template_preprocess_block()
+ *
+ * @ingroup themeable
+ */
+#}
+
+{% block content %}
+  <div class="col-md-6 text-center text-lg-end designerdby">
+    <p>
+      <a href="https://www.dotsquares.com/lp/drupal">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="16px" height="16px" viewBox="0 0 16 16" enable-background="new 0 0 16 16" xml:space="preserve">  <image id="image0" width="16" height="16" x="0" y="0" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAACBjSFJN AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAw1BMVEX0gSj0gyzzdhb6yaP9 6dnzehz0gir96Nj5tYHzdxf0fiP1kEL0hS/zeRr6yqX96dr0fCD0hC35toPzeRv0hjD0gCf2kkXy awL6xZv859bwbgnxdxnwbgr85tT4r3bybAPzcxD1hzL/9u7/yZn/zaD/ypr/9u3838n6xZz6yKH7 0K7y9/7J1+3M2u7y9/3/8+j859f97N4aLmklOnPJ1uv/tHXwbwv1ijgwRX0lOnTM2ez/uX7xeBr0 hS70fyX1kUT///9NSq1tAAAAAWJLR0RA/tlc2AAAAAd0SU1FB+cBDQURDSM87bEAAACNSURBVBjT hY9XFoIwFERfSBM1EKxArBA7WIgF+/535QLeh7/3nJm5AwDEo4wLwWXDJ80WIEBIWwWhjiItO91e fwCep4ZxkhozGk+majYHSoNYZrm1i+VqHWy2wFiYZLuiLIv94RjKE3Cu07yonKvOl6v2byBEZGzp 6vr+eL7eny8GKIJK0SwSQ+p/3/4AUrgXcZWWOC8AAAAldEVYdGRhdGU6Y3JlYXRlADIwMjMtMDEt MTNUMDU6MTc6MTMrMDA6MDCPV1nyAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIzLTAxLTEzVDA1OjE3 OjEzKzAwOjAw/grhTgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyMy0wMS0xM1QwNToxNzoxMysw MDowMKkfwJEAAAAASUVORK5CYII="/></svg>
+        Dotsquares
+      </a>
+    </p>  
+  </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+uuid: 54075b35-8f45-4224-9553-1cb353faf677
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.account
+  module:
+    - system
+  theme:
+    - power_portfolio
+id: power_portfolio_useraccountmenu
+theme: power_portfolio
+region: footer_menu2
+weight: 0
+provider: null
+plugin: 'system_menu_block:account'
+settings:
+  id: 'system_menu_block:account'
+  label: 'User account menu'
+  label_display: visible
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility: {  }
