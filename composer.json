@@ -22,7 +22,6 @@
         "drupal/block_class": "^2.0",
         "drupal/bootstrap5": "^3.0",
         "drupal/bootstrap_barrio": "^5.5",
-        "drupal/bootstrap_sass": "^5.0",
         "drupal/charts_twig": "^1.0",
         "drupal/ckeditor_bs_grid": "^2.0",
         "drupal/core-composer-scaffold": "^10.0",
