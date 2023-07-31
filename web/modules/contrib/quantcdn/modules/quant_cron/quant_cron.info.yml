@@ -1,0 +1,14 @@
+name: Quant cron
+description: Run Quant tasks during cron
+package: Quant
+
+type: module
+core_version_requirement: ^9.3 || ^10
+configure: quant_cron.settings_form
+dependencies:
+  - quant:quant_api
+
+# Information added by Drupal.org packaging script on 2023-03-08
+version: '1.5.1'
+project: 'quantcdn'
+datestamp: 1678309073

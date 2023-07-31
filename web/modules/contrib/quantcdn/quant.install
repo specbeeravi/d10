@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @file
+ * Install hook definitions for Quant.
+ */
+
+use Drupal\Core\Database\Database;
+
+/**
+ * Perform setup tasks for Quant.
+ */
+function quant_install() {
+  $config = \Drupal::configFactory()->getEditable('quant.token_settings');
+  $config->set('secret', bin2hex(random_bytes(32)));
+  $config->save();
+}
+
+/**
+ * Changes to the token schema definition to support path protection.
+ */
+function quant_update_9001(&$sandbox) {
+  // Remove any stale tokens.
+  if (method_exists(\Drupal::service('quant.token_manager'), 'release')) {
+    \Drupal::service('quant.token_manager')->release();
+  }
+
+  $schema = Database::getConnection()->schema();
+
+  $spec = [
+    'type' => 'text',
+    'size' => 'normal',
+    'not null' => FALSE,
+    'description' => 'A path to register for the token',
+  ];
+
+  $schema->changeField('quant_token', 'nid', 'route', $spec);
+
+  $spec = [
+    'type' => 'text',
+    'size' => 'normal',
+    'not null' => TRUE,
+    'description' => 'Created timestamp for the token',
+  ];
+
+  $schema->changeField('quant_token', 'created', 'created', $spec);
+
+  $config = \Drupal::configFactory()->getEditable('quant.token_settings');
+  $config->set('timeout', '+1 minute');
+  $config->save();
+}
+
+/**
+ * Add configuration option to disable token validation.
+ */
+function quant_update_9002(&$sandbox) {
+  $config = \Drupal::configFactory()->getEditable('quant.token_settings');
+  $config->set('disable', FALSE);
+  $config->save();
+}
+
+/**
+ * Support JWT for internal request tokens.
+ */
+function quant_update_9003(&$sandbox) {
+  $config = \Drupal::configFactory()->getEditable('quant.token_settings');
+  $config->set('secret', bin2hex(random_bytes(32)));
+  $config->set('strict', FALSE);
+  $config->save();
+
+  // Remove the token table.
+  $schema = Database::getConnection()->schema();
+  $schema->dropTable('quant_token');
+}
+
+/**
+ * Add default configuration for automated link following.
+ */
+function quant_update_9004(&$sandbox) {
+  $xpaths = [
+    '//li[contains(@class,"pager__item--next")]/a[contains(@href,"page=")]',
+    '//li[contains(@class,"pager__item--first")]/a[starts-with(@href, "/")]',
+  ];
+
+  $config = \Drupal::configFactory()->getEditable('quant.settings');
+  $config->set('xpath_selectors', implode(PHP_EOL, $xpaths));
+  $config->save();
+}

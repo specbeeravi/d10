@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d28a29a82cc31f4fb664e9b30c217fc1",
+    "content-hash": "838b84872a1119415de3760068e80b34",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2566,6 +2566,68 @@
             }
         },
         {
+            "name": "drupal/quantcdn",
+            "version": "1.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/quantcdn.git",
+                "reference": "1.5.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/quantcdn-1.5.1.zip",
+                "reference": "1.5.1",
+                "shasum": "d6340c6d56602d291e7d4ac2e06e1a3879e4e767"
+            },
+            "require": {
+                "drupal/core": "^9.3 || ^10"
+            },
+            "require-dev": {
+                "drupal/purge": "*",
+                "drupal/quant-quant": "*",
+                "drupal/quant-quant_api": "*",
+                "drupal/tome_static": "*",
+                "drupal/webform": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.5.1",
+                    "datestamp": "1678309070",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kristen Pol",
+                    "homepage": "https://www.drupal.org/user/8389"
+                },
+                {
+                    "name": "QuantCDN",
+                    "homepage": "https://www.drupal.org/user/3719211"
+                },
+                {
+                    "name": "steveworley",
+                    "homepage": "https://www.drupal.org/user/583814"
+                },
+                {
+                    "name": "stooit",
+                    "homepage": "https://www.drupal.org/user/2713261"
+                }
+            ],
+            "homepage": "https://www.drupal.org/project/quantcdn",
+            "support": {
+                "source": "https://git.drupalcode.org/project/quantcdn"
+            }
+        },
+        {
             "name": "drupal/thex",
             "version": "9.2.0",
             "source": {
@@ -2607,6 +2669,49 @@
             "homepage": "https://www.drupal.org/project/thex",
             "support": {
                 "source": "https://git.drupalcode.org/project/thex"
+            }
+        },
+        {
+            "name": "drupal/twbstools",
+            "version": "dev-2.1.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/twbstools.git",
+                "reference": "cbd2730d5e8f2149e79d7300a421a147bec37356"
+            },
+            "require": {
+                "drupal/core": "^9 | ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.1.x": "2.1.x-dev"
+                },
+                "drupal": {
+                    "version": "2.1.x-dev",
+                    "datestamp": "1668752846",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Vladimir Roudakov (vladimiraus)",
+                    "homepage": "https://www.drupal.org/u/vladimiraus",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Companion module for [Bootstrap 5 theme] to provide better content editor and developer experience.",
+            "homepage": "https://www.drupal.org/project/twbstools",
+            "support": {
+                "source": "https://git.drupalcode.org/project/twbstools",
+                "issues": "https://www.drupal.org/project/issues/twbstools"
             }
         },
         {
@@ -7512,6 +7617,7 @@
     "stability-flags": {
         "drupal/power_portfolio": 10,
         "drupal/project_browser": 10,
+        "drupal/twbstools": 20,
         "drupal/webform": 10,
         "drupal/webtheme": 20,
         "drupal/webtheme_default_content-webtheme_default_content": 20

@@ -1,0 +1,293 @@
+<?php
+
+/**
+ * @file
+ * Add cron support for quant processing.
+ */
+
+use Drupal\quant\Seed;
+use Drupal\Core\Form\FormState;
+use Drupal\quant\Plugin\QueueItem\RouteItem;
+use Drupal\quant\Plugin\QueueItem\FileItem;
+use Drupal\node\Entity\Node;
+use Drupal\user\Entity\User;
+use Drupal\views\Views;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_cron().
+ */
+function quant_cron_cron() {
+
+  // Quant cron only supported via CLI.
+  if (PHP_SAPI != 'cli') {
+    return;
+  }
+
+  // Load the settings form.
+  $form_state = new FormState();
+  $form_state->setRebuild();
+  \Drupal::formBuilder()->buildForm('Drupal\quant_cron\Form\CronSettingsForm', $form_state);
+  $event_dispatcher = \Drupal::service('event_dispatcher');
+
+  $batch = [
+    'title' => t('Exporting to Quant...'),
+    'operations' => [],
+    'init_message'     => t('Commencing'),
+    'progress_message' => t('Processed @current out of @total.'),
+    'error_message'    => t('An error occurred during processing'),
+    'finished' => '\Drupal\quant\Seed::finishedSeedCallback',
+  ];
+
+  $routes = [];
+  $files = [];
+
+  // Add nodes.
+  if ($form_state->getValue('entity_node')) {
+    $query = \Drupal::entityTypeManager()->getStorage('node')->getQuery();
+
+    $bundles = $form_state->getValue('entity_node_bundles');
+
+    if (!empty($bundles)) {
+      $bundles = array_filter($bundles);
+      if (!empty($bundles)) {
+        $query->condition('type', array_keys($bundles), 'IN');
+      }
+    }
+
+    $entities = $query->accessCheck(TRUE)->execute();
+
+    foreach ($entities as $vid => $nid) {
+      $entity = Node::load($nid);
+
+      $filter = [];
+
+      if (!empty($form_state->getValue('entity_node_languages'))) {
+        $filter = array_filter($form_state->getValue('entity_node_languages'));
+      }
+
+      foreach ($entity->getTranslationLanguages() as $langcode => $language) {
+        if (!empty($filter) && !in_array($langcode, $filter)) {
+          continue;
+        }
+        Seed::seedNode($entity, $langcode);
+
+        \Drupal::logger('quant_cron')->notice("quant_cron sending node: nid: @nid, langcode: @lang",
+          [
+            '@nid' => $nid,
+            '@lang' => $langcode,
+          ]
+        );
+      }
+    }
+  }
+
+  // Add custom routes.
+  if ($form_state->getValue('routes')) {
+    foreach (explode(PHP_EOL, $form_state->getValue('routes_textarea')) as $route) {
+      if (strpos((trim($route)), '/') !== 0) {
+        continue;
+      }
+
+      $routes[] = $route;
+    }
+  }
+
+  // Add file routes.
+  if ($form_state->getValue('robots')) {
+    $files[] = '/robots.txt';
+  }
+
+  // Add theme file routes.
+  if ($form_state->getValue('theme_assets')) {
+    $files = array_merge($files, quant_cron_get_theme_routes());
+  }
+
+  // Add local files.
+  if ($form_state->getValue('file_paths')) {
+    $files = array_merge($files, quant_cron_get_files_from_paths($form_state->getValue('file_paths_textarea')));
+  }
+
+  // Add views routes.
+  if ($form_state->getValue('views_pages')) {
+    $routes = array_merge($routes, quant_cron_get_views_routes());
+  }
+
+  // Add taxonomy term routes.
+  if ($form_state->getValue('entity_taxonomy_term')) {
+    $routes = array_merge($routes, quant_cron_get_taxonomy_routes());
+  }
+
+  // Send files.
+  foreach ($files as $file) {
+    \Drupal::logger('quant_cron')->notice("quant_cron sending file: @route", ['@route' => $file]);
+    $file_item = new FileItem(['file' => $file]);
+    $file_item->send();
+  }
+
+  // Send any added routes.
+  foreach ($routes as $route) {
+    \Drupal::logger('quant_cron')->notice("quant_cron sending: @route", ['@route' => $route]);
+    $item = new RouteItem(['route' => $route]);
+    $item->send();
+  }
+
+}
+
+/**
+ * Helper: Get taxonomy routes.
+ */
+function quant_cron_get_taxonomy_routes() {
+
+  $paths = [];
+  $taxonomy_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+
+  foreach ($taxonomy_storage->loadMultiple() as $term) {
+    foreach ($term->getTranslationLanguages() as $langcode => $language) {
+      // Retrieve the translated version.
+      $term = $term->getTranslation($langcode);
+      $tid = $term->id();
+
+      $options = ['absolute' => FALSE];
+
+      if (!empty($langcode)) {
+        $language = \Drupal::languageManager()->getLanguage($langcode);
+        $options['language'] = $language;
+      }
+
+      $url = Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $tid], $options)->toString();
+      $paths[] = $url;
+    }
+  }
+
+  return $paths;
+}
+
+/**
+ * Helper: Get theme assets.
+ */
+function quant_cron_get_theme_routes() {
+
+  $paths = [];
+
+  // @todo Support multiple themes (e.g site may have multiple themes changing by route).
+  $config = \Drupal::config('system.theme');
+  $themeName = $config->get('default');
+  $path = \Drupal::service('theme_handler')->getTheme($themeName)->getPath();
+
+  $themePath = DRUPAL_ROOT . '/' . $path;
+  $scheme = \Drupal::config('system.file')->get('default_scheme');
+  $filesPath = \Drupal::service('file_system')->realpath($scheme . "://");
+
+  if (!is_dir($themePath)) {
+    \Drupal::logger('quant_cron')->error("Theme path does not exist on disk: @path", ['@path' => $themePath]);
+    return $paths;
+  }
+
+  $directoryIterator = new \RecursiveDirectoryIterator($themePath, \RecursiveDirectoryIterator::SKIP_DOTS);
+  $iterator = new \RecursiveIteratorIterator($directoryIterator);
+  $regex = new \RegexIterator($iterator, '/^.+(.jpe?g|.png|.svg|.ttf|.woff|.woff2|.otf|.ico|.js|.css)$/i', \RecursiveRegexIterator::GET_MATCH);
+
+  foreach ($regex as $name => $r) {
+    // Skip node_modules.
+    if (preg_match('/node_modules/i', $name)) {
+      continue;
+    }
+    $path = str_replace(DRUPAL_ROOT, '', $name);
+    $paths[] = $path;
+  }
+
+  // Include all aggregated css/js files.
+  $iterator = new \AppendIterator();
+
+  if (is_dir($filesPath . '/css')) {
+    $directoryIteratorCss = new \RecursiveDirectoryIterator($filesPath . '/css', \RecursiveDirectoryIterator::SKIP_DOTS);
+    $iterator->append(new \RecursiveIteratorIterator($directoryIteratorCss));
+  }
+
+  if (is_dir($filesPath . '/js')) {
+    $directoryIteratorJs = new \RecursiveDirectoryIterator($filesPath . '/js', \RecursiveDirectoryIterator::SKIP_DOTS);
+    $iterator->append(new \RecursiveIteratorIterator($directoryIteratorJs));
+  }
+
+  foreach ($iterator as $fileInfo) {
+    $path = str_replace(DRUPAL_ROOT, '', $fileInfo->getPathname());
+    $paths[] = $path;
+  }
+
+  return $paths;
+}
+
+/**
+ * Helper: Get custom file paths.
+ */
+function quant_cron_get_files_from_paths($files_textarea) {
+  $paths = [];
+  $files = [];
+
+  foreach (explode(PHP_EOL, $files_textarea) as $path) {
+    // Paths must be relative to the drupal web root.
+    $paths[] = DRUPAL_ROOT . "/" . ltrim($path, '/');
+  }
+
+  foreach ($paths as $path) {
+    foreach (glob(trim($path)) as $filename) {
+      if (is_file($filename)) {
+        $path = str_replace(DRUPAL_ROOT, '', $filename);
+        $files[] = $path;
+      }
+    }
+  }
+
+  return $files;
+}
+
+/**
+ * Helper: Get views routes.
+ */
+function quant_cron_get_views_routes() {
+
+  $views_storage = \Drupal::entityTypeManager()->getStorage('view');
+  $anon = User::getAnonymousUser();
+
+  $paths = [];
+
+  foreach ($views_storage->loadMultiple() as $view) {
+
+    $view = Views::getView($view->get('id'));
+
+    $displays = array_keys($view->storage->get('display'));
+    foreach ($displays as $display) {
+      $view->setDisplay($display);
+
+      if ($view->access($display, $anon) && $path = $view->getPath()) {
+
+        // Exclude contextual filters for now.
+        if (strpos($path, '%') !== FALSE) {
+          continue;
+        }
+
+        if (in_array($path, $paths)) {
+          continue;
+        }
+
+        if (strpos($path, 'admin') > -1) {
+          // @todo Check why view access check does exclude these.
+          continue;
+        }
+
+        $paths[] = $path;
+
+        // Languge negotiation may also provide path prefixes.
+        if ($prefixes = \Drupal::config('language.negotiation')->get('url.prefixes')) {
+          foreach ($prefixes as $prefix) {
+            $paths[] = "/{$prefix}/{$path}";
+          }
+        }
+      }
+    }
+  }
+
+  return $paths;
+
+}
