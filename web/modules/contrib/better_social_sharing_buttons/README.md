@@ -27,6 +27,7 @@ There is a settings form where you can set which services you would like to use:
 - Email
 - Pinterest
 - Linkedin
+- Xing
 - Digg
 - Tumblr
 - Reddit

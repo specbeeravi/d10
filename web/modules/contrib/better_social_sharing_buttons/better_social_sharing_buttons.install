@@ -55,3 +55,28 @@ function better_social_sharing_buttons_update_8003() {
   $config = $config_factory->getEditable('better_social_sharing_buttons.settings');
   $config->clear('services.stumbleupon')->save();
 }
+
+/**
+ * Converts settings to schema conform format.
+ */
+function better_social_sharing_buttons_update_8004() {
+  // Updates the system configuration.
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('better_social_sharing_buttons.settings');
+  $services = array_filter($config->get('services'));
+  $node_field = $config->get('node_field');
+  $config
+    ->set('services', $services)
+    ->set('node_field', (bool) $node_field)
+    ->save();
+
+  // Updates the block configuration.
+  $block_storage = \Drupal::service('entity_type.manager')->getStorage('block');
+  $blocks = $block_storage->loadByProperties(['plugin' => 'social_sharing_buttons_block']);
+  foreach ($blocks as $block) {
+    $config = $block->get('settings');
+    $config['services'] = array_filter($config['services']);
+    $block->set('settings', $config)->save();
+  }
+
+}

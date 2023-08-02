@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\File\FileSystemInterface;
 
 /**
  * Implements hook_form_system_theme_settings_alter().
@@ -124,6 +125,12 @@ function power_portfolio_form_system_theme_settings_alter(&$form, FormStateInter
       '#default_value' => theme_get_setting('banner_display', 'power_portfolio'),
       '#description'   => t("Check this option to show Banner in front page. Uncheck to hide."),
     ];
+    $form['banner']['bg_image'] = [
+      '#type' => 'managed_file',
+      '#title' => t('Banner Background Image'),
+      '#default_value' => theme_get_setting('bg_image', 'power_portfolio'),
+      '#upload_location' => 'public://',
+    ];
     $form['banner']['banner_title'] = [
       '#type' => 'textfield',
       '#title' => t('Banner Title'),
@@ -170,8 +177,12 @@ function power_portfolio_form_system_theme_settings_alter(&$form, FormStateInter
     }
 
     $form['#submit'][] = 'power_portfolio_settings_form_submit';
-    // $theme = \Drupal::theme()->getActiveTheme()->getName();
+    $theme = \Drupal::theme()->getActiveTheme()->getName();
+    $theme_file = \Drupal::service('extension.list.theme')->getPath($theme) . '/power_portfolio.theme';
     $build_info = $form_state->getBuildInfo();
+    if (!in_array($theme_file, $build_info['files'])) {
+      $build_info['files'][] = $theme_file;
+    }
     $form_state->setBuildInfo($build_info);
 
   }
@@ -205,7 +216,18 @@ function power_portfolio_preprocess_page(&$variables) {
       'card_title' => theme_get_setting('card' . $i . '_title', 'power_portfolio'),
     ];
   }
+  $fid = theme_get_setting('bg_image');
+  if (!empty($fid)) {
+    $file = \Drupal::entityTypeManager()->getStorage('file')->load($fid[0]);
+    $uri = $file->getFileUri();
+    $image_path = \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
+  }
+  else {
+    $image_path = \Drupal::service('extension.list.theme')->getPath('power_portfolio') . '/image/NvXs1z.jpg';
+  }
+  
   $variables['card'] = $slider;
+  $variables['banner_bg_img'] = $image_path;
 }
 
 /**

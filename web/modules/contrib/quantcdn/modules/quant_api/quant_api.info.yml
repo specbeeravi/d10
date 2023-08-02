@@ -8,7 +8,7 @@ configure: quant_api.settings_form
 dependencies:
   - drupal:quant
 
-# Information added by Drupal.org packaging script on 2023-03-08
-version: '1.5.1'
+# Information added by Drupal.org packaging script on 2023-07-31
+version: '1.5.2'
 project: 'quantcdn'
-datestamp: 1678309073
+datestamp: 1690765541

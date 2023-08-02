@@ -83,6 +83,7 @@ class SocialSharingButtonsBlock extends BlockBase implements ContainerFactoryPlu
         'email' => $this->t('Email'),
         'pinterest' => $this->t('Pinterest'),
         'linkedin' => $this->t('LinkedIn'),
+        'xing' => $this->t('Xing'),
         'digg' => $this->t('Digg'),
         'tumblr' => $this->t('Tumblr'),
         'reddit' => $this->t('Reddit'),
@@ -168,7 +169,7 @@ class SocialSharingButtonsBlock extends BlockBase implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['services'] = $form_state->getValue('services');
+    $this->configuration['services'] = array_filter($form_state->getValue('services'));
     $this->configuration['iconset'] = $form_state->getValue('iconset');
     $this->configuration['facebook_app_id'] = $form_state->getValue('facebook_app_id');
     $this->configuration['print_css'] = $form_state->getValue('print_css');

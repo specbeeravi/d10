@@ -18,7 +18,7 @@ regions:
   footer_menu2: 'Footer Menu 2'
   footer_email: 'Footer Email'
 
-# Information added by Drupal.org packaging script on 2023-07-07
-version: '9.0.0-beta1'
+# Information added by Drupal.org packaging script on 2023-07-13
+version: '9.0.1'
 project: 'power_portfolio'
-datestamp: 1688728354
+datestamp: 1689235783

@@ -43,6 +43,7 @@ class BetterSocialSharingButtonsForm extends ConfigFormBase {
       'email' => $this->t('Email'),
       'pinterest' => $this->t('Pinterest'),
       'linkedin' => $this->t('Linkedin'),
+      'xing' => $this->t('Xing'),
       'digg' => $this->t('Digg'),
       'tumblr' => $this->t('Tumblr'),
       'reddit' => $this->t('Reddit'),
@@ -141,7 +142,7 @@ class BetterSocialSharingButtonsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('better_social_sharing_buttons.settings');
-    $config->set('services', $form_state->getValue('services'));
+    $config->set('services', array_filter($form_state->getValue('services')));
     $config->set('width', $form_state->getValue('width'));
     $config->set('radius', $form_state->getValue('radius'));
     $config->set('facebook_app_id', $form_state->getValue('facebook_app_id'));

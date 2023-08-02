@@ -37,6 +37,7 @@ and it is great for any kind of Portfolio website.
  * Mobile support (Smartphone, Tablet, Android, iPhone, etc)
  * A total of 8 block regions
  * Custom Banner card.
+ * Custom Banner background.
  * Sticky header.
  * Footer copyright section.
  * Arrow up(align left/right)
@@ -67,6 +68,7 @@ Available options in the theme settings:
 
  * Hide/show banner in front page.
  * Choose One to five cards on banner.
+ * Change banner background image.
  * Hide/show and change copyright text.
  * Hide/show and change Social Media Icon.
  * Hide/show and change Information Field text.

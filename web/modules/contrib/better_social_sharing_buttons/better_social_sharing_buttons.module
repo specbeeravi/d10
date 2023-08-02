@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
@@ -83,13 +84,12 @@ function better_social_sharing_buttons_node_view(array &$build, EntityInterface 
  */
 function better_social_sharing_buttons_preprocess_better_social_sharing_buttons(&$variables) {
   if (isset($variables['items']['iconset'])) {
-    $variables['social_buttons_sprite'] = '/' . \Drupal::service('extension.list.module')->getPath('better_social_sharing_buttons') . '/assets/dist/sprites/' . $variables['items']['iconset'] . '.svg';
-    $variables['items']['iconset'];
+    $icon_set = $variables['items']['iconset'];
   }
   else {
-    $config = \Drupal::config('better_social_sharing_buttons.settings');
-    $variables['social_buttons_sprite'] = '/' . \Drupal::service('extension.list.module')->getPath('better_social_sharing_buttons') . '/assets/dist/sprites/' . $config->get('iconset') . '.svg';
+    $icon_set = \Drupal::config('better_social_sharing_buttons.settings')->get('iconset');
   }
+  $variables['social_buttons_sprite'] = Url::fromUri('internal:/' . \Drupal::service('extension.list.module')->getPath('better_social_sharing_buttons') . '/assets/dist/sprites/' . $icon_set . '.svg')->toString();
 }
 
 /**
