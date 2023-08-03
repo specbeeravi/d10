@@ -1,0 +1,19 @@
+jquery.jqplot:
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+  header: true
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.js: { type: external, minified: true }
+    https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.barRenderer.min.js: { type: external, minified: true }
+    https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.categoryAxisRenderer.min.js: { type: external, minified: true }
+    https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.pointLabels.min.js: { type: external, minified: true }
+  css:
+    theme:
+      https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.css: { type: external, minified: true }
+
+
+visitors.admin:
+  js:
+    js/visitors.admin.js: {}

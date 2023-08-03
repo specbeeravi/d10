@@ -1,0 +1,317 @@
+<?php
+
+/**
+ * @file
+ * Install/uninstall visitors module.
+ */
+
+use Drupal\block\Entity\Block;
+use Drupal\Core\Database\Database;
+
+/**
+ * Implements hook_schema().
+ */
+function visitors_schema() {
+  $schema['visitors'] = [
+    'fields' => [
+      'visitors_id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'visitors_uid' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'visitors_ip' => [
+        'type' => 'varchar',
+        'length' => 45,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'visitors_date_time' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'visitors_url' => [
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+      'visitors_referer' => [
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+      'visitors_path' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'visitors_title' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'visitors_user_agent' => [
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['visitors_id'],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Exclude users from statistics by role.
+ */
+function visitors_update_8210() {
+
+  $config = \Drupal::service('config.factory')->getEditable('visitors.config');
+  $roles = [];
+  if ($config->get('exclude_administer_users')) {
+    $roles['administer'] = 'administer';
+  }
+  $config->set('excluded_roles', $roles);
+  $config->set('exclude_user1', FALSE);
+  $config->clear('exclude_administer_users');
+
+  $config->save();
+}
+
+/**
+ * Adds default block settings.
+ */
+function visitors_update_8212() {
+
+  $config = \Drupal::service('config.factory')->getEditable('visitors.config');
+  $ids = \Drupal::entityQuery('block')
+    ->condition('plugin', 'visitors_block')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  foreach ($ids as $bid) {
+    $save = FALSE;
+    $block = Block::load($bid);
+    $settings = $block->get('settings') ?? [];
+
+    if (!array_key_exists('show_last_registered_user', $settings)) {
+      $settings['show_last_registered_user'] = $config->get('show_last_registered_user');
+      $save = TRUE;
+    }
+    if (!array_key_exists('show_published_nodes', $settings)) {
+      $settings['show_published_nodes'] = $config->get('show_published_nodes');
+      $save = TRUE;
+    }
+    if (!array_key_exists('show_registered_users_count', $settings)) {
+      $settings['show_registered_users_count'] = $config->get('show_registered_users_count');
+      $save = TRUE;
+    }
+    if (!array_key_exists('show_since_date', $settings)) {
+      $settings['show_since_date'] = $config->get('show_since_date');
+      $save = TRUE;
+    }
+    if (!array_key_exists('show_total_visitors', $settings)) {
+      $settings['show_total_visitors'] = $config->get('show_total_visitors');
+      $save = TRUE;
+    }
+    if (!array_key_exists('show_unique_visitor', $settings)) {
+      $settings['show_unique_visitor'] = $config->get('show_unique_visitor');
+      $save = TRUE;
+    }
+    if (!array_key_exists('show_user_ip', $settings)) {
+      $settings['show_user_ip'] = $config->get('show_user_ip');
+      $save = TRUE;
+    }
+
+    if ($save) {
+      $block->set('settings', $settings);
+      $block->save();
+    }
+  }
+}
+
+/**
+ * Support IPv6.
+ */
+function visitors_update_8214(&$sandbox) {
+  drupal_flush_all_caches();
+  // Retrieves a \Drupal\Core\Database\Connection which is a PDO instance.
+  $database = Database::getConnection();
+
+  if (!isset($sandbox['progress'])) {
+    $database->schema()
+      ->changeField('visitors', 'visitors_ip', 'visitors_ip', [
+        'type' => 'varchar',
+        'length' => 45,
+        'not null' => TRUE,
+        'default' => '',
+      ]);
+
+    $sandbox['progress'] = 0;
+    $sandbox['last_id'] = 0;
+    $sandbox['max'] = $database->select('visitors', 'v')
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+  }
+
+  $logs = $database->select('visitors', 'v')
+    ->fields('v', [
+      'visitors_id',
+      'visitors_ip',
+    ])
+    ->condition('visitors_id', $sandbox['last_id'], '>')
+    ->range(0, 75)
+    ->orderBy('visitors_id', 'ASC')
+    ->execute();
+
+  foreach ($logs as $log) {
+    $sandbox['progress'] += 1;
+    $sandbox['last_id'] = $log->visitors_id;
+
+    $visitors_ip = intval($log->visitors_ip);
+    if (FALSE == $visitors_ip) {
+      continue;
+    }
+    $ip_address = long2ip($visitors_ip);
+    if ($ip_address === FALSE) {
+      continue;
+    }
+    try {
+      $database->update('visitors')
+        ->fields([
+          'visitors_ip' => $ip_address,
+        ])
+        ->condition('visitors_id', $log->visitors_id)
+        ->execute();
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+
+  }
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
+}
+
+/**
+ * Uses ajax for tracking.
+ */
+function visitors_update_8215(&$sandbox) {
+
+  if (!isset($sandbox['progress'])) {
+    $sandbox['max'] = 10;
+    // Clear all caches.
+    drupal_flush_all_caches();
+
+    // Update visitors.config.
+    $settings = \Drupal::service('config.factory')->getEditable('visitors.config');
+    $config = \Drupal::config('visitors.config');
+
+    $settings->set('visibility.user_role_mode', 1);
+    if (count($config->get('excluded_roles'))) {
+      $settings->set('visibility.user_role_roles', $config->get('excluded_roles'));
+    }
+
+    if ($config->get('exclude_user1')) {
+      $settings->set('visibility.exclude_user1', TRUE);
+    }
+
+    $settings->delete('exclude_user1');
+    $settings->delete('excluded_pages');
+    $settings->delete('excluded_roles');
+    $settings->delete('negate_pages');
+
+    $settings->set('visibility.request_path_mode', 0);
+    $settings->set('visibility.request_path_pages', "/admin\n/admin/*\n/batch\n/node/add*\n/node/*/*\n/user/*/*");
+    $settings->set('visibility.user_account_mode', 0);
+    $settings->set('track.userid', TRUE);
+    $settings->set('domain_mode', 0);
+    $settings->set('codesnippet.before', '');
+    $settings->set('codesnippet.after', '');
+
+    $settings->set('disable_tracking', FALSE);
+    $settings->set('status_codes_disabled', []);
+
+    $settings->save();
+    $sandbox['progress'] = 0;
+  }
+
+  // Delete invalid visits.
+  $database = \Drupal::database();
+  if ($sandbox['progress'] == 1) {
+    // Deletes cron visits.
+    $database->delete('visitors')
+      ->condition('visitors_url', 'http://default/')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 2) {
+    // Delete batch job visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/batch')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 3) {
+    // Deletes ajax visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/history/get_node_read_timestamps')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 4) {
+    // Deletes ajax history visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/history/%/read', 'LIKE')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 5) {
+    // Delete uploaded image visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/ckeditor5/upload-image/%', 'LIKE')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 6) {
+    // Delete jsnlog entries.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/jsnlog/log%', 'LIKE')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 7) {
+    $database->delete('visitors')
+      ->condition('visitors_url', '%/jsnlog.logger', 'LIKE')
+      ->condition('visitors_path', '/',)
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 8) {
+    // Deletes tagify visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/tagify_autocomplete/%', 'LIKE')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 9) {
+    // Deletes entity reference id visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/entity_reference_autocomplete_id/%/%/%', 'LIKE')
+      ->execute();
+  }
+
+  if ($sandbox['progress'] == 10) {
+    // Deletes entity reference visits.
+    $database->delete('visitors')
+      ->condition('visitors_path', '/entity_reference_autocomplete/%/%/%', 'LIKE')
+      ->execute();
+  }
+
+  $sandbox['progress'] += 1;
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
+}

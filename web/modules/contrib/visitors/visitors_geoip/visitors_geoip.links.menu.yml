@@ -1,0 +1,11 @@
+visitors_geoip.countries:
+  title: 'Countries'
+  route_name: visitors.countries
+  parent: visitors.index
+  description: 'View visits grouped by country.'
+
+# visitors_geoip.cities:
+#   title: 'Cities'
+#   route_name: visitors.cities
+#   parent: visitors.index
+#   description: 'View visits grouped by city.'

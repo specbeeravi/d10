@@ -1,0 +1,5 @@
+visitors.node_tab:
+  base_route: entity.node.canonical
+  route_name: visitors.node
+  title: 'Visitors'
+  weight: 75
