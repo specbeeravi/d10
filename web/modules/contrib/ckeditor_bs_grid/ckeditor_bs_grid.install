@@ -54,3 +54,10 @@ function ckeditor_bs_grid_update_8201() {
     }
   }
 }
+
+/**
+ * Rebuild caches to recognize plugin changes.
+ */
+function ckeditor_bs_grid_update_9001(&$sandbox) {
+  // Nothing, just rebuild cache.
+}

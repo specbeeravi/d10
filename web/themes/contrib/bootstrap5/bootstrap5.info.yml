@@ -41,7 +41,7 @@ regions:
   sidebar_second: 'Sidebar second'
   footer: Footer
 
-# Information added by Drupal.org packaging script on 2023-06-05
-version: '3.0.8'
+# Information added by Drupal.org packaging script on 2023-08-04
+version: '3.0.9'
 project: 'bootstrap5'
-datestamp: 1685974140
+datestamp: 1691152591

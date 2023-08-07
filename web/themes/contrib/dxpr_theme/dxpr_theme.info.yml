@@ -38,6 +38,10 @@ libraries-override:
       component:
         css/components/collapse-processed.css: false
 
+libraries-extend:
+  gin/gin_toolbar:
+    - dxpr_theme/gin_toolbar
+
 config:
   install:
     - dxpr_theme.settings
@@ -95,7 +99,7 @@ dxpr_builder_classes:
   dxpr-theme-util-text-uppercase: 'Text Uppercase'
   dxpr-theme-util-vcenter: 'Vertical centering'
 
-# Information added by Drupal.org packaging script on 2023-04-20
-version: '5.1.0'
+# Information added by Drupal.org packaging script on 2023-08-03
+version: '5.1.1'
 project: 'dxpr_theme'
-datestamp: 1682004288
+datestamp: 1691057110

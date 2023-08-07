@@ -162,12 +162,20 @@ export default class BootstrapGridEditing extends Plugin {
       },
     });
 
-    conversion.for("downcast").elementToElement({
+    conversion.for("editingDowncast").elementToElement({
       model: "bsGridCol",
       view: (modelElement, { writer }) => {
         const element = writer.createEditableElement("div");
         writer.setCustomProperty("bsGridCol", true, element);
         return toWidgetEditable(element, writer);
+      },
+    });
+
+    conversion.for("dataDowncast").elementToElement({
+      model: "bsGridCol",
+      view: {
+        name: "div",
+        classes: "",
       },
     });
 

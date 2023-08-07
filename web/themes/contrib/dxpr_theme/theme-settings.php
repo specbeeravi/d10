@@ -5,9 +5,9 @@
  * DXPR Theme settings.
  */
 
-use Drupal\node\Entity\NodeType;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\Exception\FileException;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -26,31 +26,30 @@ function dxpr_theme_form_system_theme_settings_alter(&$form, &$form_state, $form
   if (theme_get_setting('boxed_layout') === 1) {
     if (theme_get_setting('box_max_width') < '1200') {
       \Drupal::messenger()->addStatus('You set a Boxed Container Max Width of less than 1200px. To preserve the layout of the settings form we are overriding this setting specifically for this page. Your setting is applied on other pages.');
-      ?>
-      <style>
-        .dxpr-theme-boxed-container {
-          max-width: 1300px !important;
-        }
-      </style>
-      <?php
+
+      $form['dxpr_theme_boxed_container_styles'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'style',
+        '#value' => '.dxpr-theme-boxed-container { max-width: 1300px !important; }',
+      ];
     }
   }
   elseif (theme_get_setting('layout_max_width') < '1200') {
     \Drupal::messenger()->addStatus('You set a Content Max Width of less than 1200px. To preserve the layout of the settings form we are overriding this setting specifically for this page. Your setting is applied on other pages.');
-    ?>
-    <style>
-      .container {
-        max-width: 1300px !important;
-      }
-    </style>
-    <?php
+
+    $form['dxpr_theme_container_styles'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'style',
+      '#value' => '.container { max-width: 1300px !important; }',
+    ];
   }
+
   $build_info = $form_state->getBuildInfo();
   $subject_theme = $build_info['args'][0];
   $dxpr_theme_theme_path = \Drupal::service('extension.list.theme')->getPath('dxpr_theme') . '/';
   $themes = \Drupal::service('theme_handler')->listInfo();
 
-  $img = '<img width="100" height="37" src="' . $base_path . $dxpr_theme_theme_path . 'dxpr-logo-white.svg" />';
+  $img = '<img width="40" height="15" src="' . $base_path . $dxpr_theme_theme_path . 'images/dxpr-logo-dark.svg" />';
   if (!empty($themes[$subject_theme]->info['version'])) {
     $version = $themes[$subject_theme]->info['version'];
   }
@@ -62,7 +61,7 @@ function dxpr_theme_form_system_theme_settings_alter(&$form, &$form_state, $form
     // STOPS RENDERING OF ALL ELEMENTS INSIDE.
     '#type' => 'vertical_tabs',
     '#weight' => -20,
-    '#prefix' => '<h2><small>' . $img . ' ' . ucfirst($subject_theme) . ' ' . $version . ' <span class="small">(' . $themes['bootstrap5']->info['name'] . ' base theme ' . $themes['bootstrap5']->info['version'] . ')</span>' . '</small></h2>',
+    '#prefix' => '<h2><small>' . $img . ' ' . $themes[$subject_theme]->info['name'] . ' ' . $version . ' <span class="small">(' . $themes['bootstrap5']->info['name'] . ' base theme ' . $themes['bootstrap5']->info['version'] . ')</span>' . '</small></h2>',
   ];
   // $form['color']['#group'] = 'dxpr_theme_settings';
   if (!empty($form['update'])) {
