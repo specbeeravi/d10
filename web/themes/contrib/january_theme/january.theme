@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Render\Element;
 use Drupal\user\UserInterface;
+use Drupal\Core\Routing\RouteObjectInterface;
 
 /**
  * Implements hook_preprocess_HOOK() for HTML document templates.
@@ -172,8 +173,9 @@ function january_preprocess_block(&$variables) {
       }
     }
   }
+
   $request = \Drupal::request();
-  if ($route = $request->attributes->get(\Symfony\Cmf\Component\Routing\RouteObjectInterface::ROUTE_OBJECT)) {
+  if ($route = $request->attributes->get(RouteObjectInterface::ROUTE_OBJECT)) {
     $title = \Drupal::service('title_resolver')->getTitle($request, $route);
     $variables['page__title']=strip_tags($title);
   }

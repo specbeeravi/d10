@@ -85,8 +85,3 @@ ckeditor_stylesheets:
   - css/theme/ckeditor-frame.css
 
 ckeditor5-stylesheets: false
-
-# Information added by Drupal.org packaging script on 2023-02-04
-version: '1.0.1'
-project: 'january_theme'
-datestamp: 1675504404

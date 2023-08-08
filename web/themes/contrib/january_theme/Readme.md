@@ -1,8 +1,10 @@
 # January Bootstrap 5 theme
 
-January, a Drupal 10 supported theme, developed by Dotsquares is based on Bootstrap 5 and is fully responsive.
+January, a Drupal 10 supported theme, developed by Dotsquares is
+based on Bootstrap 5 and is fully responsive.
 
-This is a fully customizable theme that can be used by any industry or corporate house for their corporate website.
+This is a fully customizable theme that can be used by any industry
+or corporate house for their corporate website.
 
 For a full description of the module, visit the
 [project page](https://www.drupal.org/project/january_theme).
@@ -36,8 +38,8 @@ information, see
 1. Enable the thems at Administration > Appearance.
 2. Go to theme setting page set all the fields listed on the page.
 3. Enable media,media library and Layout builder module.
-4. When creating a new image field on a content type or custom entity type, choose
-   "Media Field" from the drop-down menu.
+4. When creating a new image field on a content type or custom entity type,
+   choose "Media Field" from the drop-down menu.
 5. On the Image Field Settings form for the Media Field, select the media type
    as you would with any other field.
 
