@@ -40,6 +40,8 @@
         "drupal/thex": "^9.2",
         "drupal/twbstools": "2.1.x-dev@dev",
         "drupal/vani": "^10.0",
+        "drupal/video_embed_field": "^2.5",
+        "drupal/video_embed_html5": "^2.0",
         "drupal/visitors": "^2.15",
         "drupal/webform": "^6.2@beta",
         "drupal/webtheme": "10.0.x-dev@dev",
