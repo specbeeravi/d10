@@ -5,7 +5,7 @@
 .video-embed-field-responsive-video:after {
   content: '';
   display: block;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25px;
 }
 
 .video-embed-field-responsive-video iframe {

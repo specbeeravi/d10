@@ -51,6 +51,7 @@ affix:
       css/components/affix.css: {}
   dependencies:
     - core/jquery
+    - core/once
 alerts:
   version: VERSION
   css:
