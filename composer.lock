@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26d77b645022c5113124c849486bfeda",
+    "content-hash": "5335d8b89181523d73c49b504fa48ad9",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1542,6 +1542,58 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/bootstrap5",
                 "issues": "https://www.drupal.org/project/issues/bootstrap5"
+            }
+        },
+        {
+            "name": "drupal/bootstrap5_admin",
+            "version": "1.1.19",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/bootstrap5_admin.git",
+                "reference": "1.1.19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/bootstrap5_admin-1.1.19.zip",
+                "reference": "1.1.19",
+                "shasum": "01d53deedb61b98134fe1c0aac6dfa26d1fc0775"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-theme",
+            "extra": {
+                "drupal": {
+                    "version": "1.1.19",
+                    "datestamp": "1686898224",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "NGUYEN Bao",
+                    "homepage": "https://www.drupal.org/u/lazzyvn",
+                    "email": "n.bao@yahoo.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "lazzyvn",
+                    "homepage": "https://www.drupal.org/user/2896581"
+                }
+            ],
+            "description": "Admin Bootstrap 5, faster and easier web application development.",
+            "homepage": "https://www.drupal.org/project/bootstrap5_admin",
+            "support": {
+                "source": "https://git.drupalcode.org/project/bootstrap5_admin",
+                "docs": "https://drupal-bootstrap.org",
+                "issues": "https://www.drupal.org/project/issues/bootstrap5_admin"
             }
         },
         {
