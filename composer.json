@@ -28,9 +28,9 @@
         "drupal/charts_twig": "^1.0",
         "drupal/ckeditor5_template": "^1.0",
         "drupal/ckeditor_bs_grid": "^2.0",
-        "drupal/core-composer-scaffold": "^10.0",
-        "drupal/core-project-message": "^10.0",
-        "drupal/core-recommended": "^10.0",
+        "drupal/core-composer-scaffold": "10.2.0",
+        "drupal/core-project-message": "10.2.0",
+        "drupal/core-recommended": "10.2.0",
         "drupal/dxpr_theme": "^5.1",
         "drupal/fieldblock": "^2.2",
         "drupal/january_theme": "^1.0",
@@ -49,7 +49,7 @@
         "drupal/webtheme_default_content-webtheme_default_content": "10.0.x-dev@dev",
         "drupal/xara": "^10.1",
         "drupal/xmlsitemap": "^1.4",
-        "drush/drush": "^11.5"
+        "drush/drush": "~12.0"
     },
     "conflict": {
         "drupal/drupal": "*"
