@@ -33,6 +33,8 @@
         "drupal/core-recommended": "10.2.0",
         "drupal/dxpr_theme": "^5.1",
         "drupal/fieldblock": "^2.2",
+        "drupal/gin": "^3.0@RC",
+        "drupal/gin_toolbar": "^1.0@RC",
         "drupal/january_theme": "^1.0",
         "drupal/paragraphs": "^1.15",
         "drupal/power_portfolio": "^9.0@beta",
