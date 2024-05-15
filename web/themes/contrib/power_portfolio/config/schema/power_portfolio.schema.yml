@@ -1,5 +1,0 @@
-# Required to validate default theme settings.
-
-power_portfolio.settings:
-  type: theme_settings
-  label: 'Power Portfolio Settings'

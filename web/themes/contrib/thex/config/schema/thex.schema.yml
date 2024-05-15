@@ -1,5 +1,0 @@
-# Schema for the configuration files of The X theme.
-
-thex.settings:
-  type: theme_settings
-  label: 'The X Settings'
