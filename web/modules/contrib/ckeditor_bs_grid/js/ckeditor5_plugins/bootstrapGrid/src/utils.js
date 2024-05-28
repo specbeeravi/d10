@@ -121,6 +121,12 @@ export function getClosestSelectedBootstrapGridWidget(selection) {
   if (viewElement && isBootstrapGridWidget(viewElement)) {
     return viewElement;
   }
+
+  // Perhaps nothing is selected.
+  if (selection.getFirstPosition() === null) {
+    return null;
+  }
+
   let { parent } = selection.getFirstPosition();
   while (parent) {
     if (parent.is("element") && isBootstrapGridWidget(parent)) {

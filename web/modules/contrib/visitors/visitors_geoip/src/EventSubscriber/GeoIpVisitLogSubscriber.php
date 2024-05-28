@@ -2,8 +2,8 @@
 
 namespace Drupal\visitors_geoip\EventSubscriber;
 
-use Drupal\visitors_geoip\VisitorsGeoIpInterface;
 use Drupal\visitors\Event\VisitLogEvent;
+use Drupal\visitors_geoip\VisitorsGeoIpInterface;
 use GeoIp2\Exception\AddressNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -24,7 +24,8 @@ class GeoIpVisitLogSubscriber implements EventSubscriberInterface {
   /**
    * The GeoIP service.
    *
-   * @var \Drupal\visitors_geoip\VisitorsGeoIpInterface
+   * @param \Drupal\visitors_geoip\VisitorsGeoIpInterface $geoip
+   *   The GeoIP service.
    */
   public function __construct(VisitorsGeoIpInterface $geoip) {
     $this->geoip = $geoip;

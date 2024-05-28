@@ -1,0 +1,9 @@
+# Schema for the views plugins of the Statistics module.
+
+views.field.visitors_numeric:
+  type: views.field.numeric
+  label: 'Numeric values from the visitors module'
+
+views.field.visitors_counter_timestamp:
+  type: views.field.date
+  label: 'The most recent time the node has been viewed'

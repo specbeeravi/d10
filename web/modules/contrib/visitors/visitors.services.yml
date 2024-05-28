@@ -1,7 +1,8 @@
 services:
   visitors.negotiator:
     class: Drupal\visitors\Theme\VisitorThemeNegotiator
-    arguments: ['@config.factory']
+    arguments:
+      - '@config.factory'
     tags:
       - { name: theme_negotiator, priority: -50 }
 
@@ -13,6 +14,7 @@ services:
       - '@module_handler'
       - '@database'
       - '@event_dispatcher'
+      - '@visitors.counter'
 
   visitors.visibility:
     class: Drupal\visitors\Service\VisibilityService
@@ -47,6 +49,7 @@ services:
       - '@session_configuration'
       - '@current_route_match'
       - '@entity.repository'
+      - '@visitors.counter'
 
   visitors.report:
     class: Drupal\visitors\Service\ReportService
@@ -58,3 +61,21 @@ services:
       - '@date.formatter'
       - '@entity_type.manager'
       - '@module_handler'
+
+  visitors.counter:
+    class: Drupal\visitors\Service\CounterService
+    arguments:
+      - '@database'
+      - '@datetime.time'
+      - '@state'
+
+  visitors.rebuild.route:
+    class: Drupal\visitors\Service\RebuildRouteService
+    arguments:
+      - '@database'
+      - '@router.no_access_checks'
+
+  visitors.rebuild.ip_address:
+    class: Drupal\visitors\Service\RebuildIpAddressService
+    arguments:
+      - '@database'

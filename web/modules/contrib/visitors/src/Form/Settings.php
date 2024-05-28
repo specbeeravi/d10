@@ -2,6 +2,7 @@
 
 namespace Drupal\visitors\Form;
 
+use Drupal\Core\Config\Entity\ConfigEntityType;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -452,6 +453,25 @@ class Settings extends ConfigFormBase {
       '#description' => $this->t('Chart height.'),
     ];
 
+    $form['entity'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Entity counter'),
+      '#group' => 'tracking_scope',
+    ];
+    $form['entity']['counter_enabled'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Count node views'),
+      '#default_value' => $config->get('counter.enabled'),
+      '#description' => $this->t('Count the number of times a node is viewed.'),
+    ];
+    $form['entity']['entity_types'] = [
+      '#type' => 'hidden',
+      '#title' => $this->t('Entity Types'),
+      '#options' => $this->entityTypes(),
+      '#default_value' => $config->get('counter.entity_types') ?? [],
+      '#description' => $this->t('Which entity types should be tracked.'),
+    ];
+
     // Advanced feature configurations.
     $form['advanced'] = [
       '#type' => 'details',
@@ -550,6 +570,7 @@ class Settings extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->configFactory->getEditable(static::SETTINGS);
     $values = $form_state->getValues();
+
     $config
       ->set('show_total_visitors', $values['show_total_visitors'])
       ->set('start_count_total_visitors', $values['start_count_total_visitors'])
@@ -568,13 +589,16 @@ class Settings extends ConfigFormBase {
       ->set('codesnippet.after', $values['visitors_codesnippet_after'])
       ->set('domain_mode', $values['visitors_domain_mode'])
       ->set('track.userid', $values['visitors_trackuserid'])
+      ->set('counter.enabled', $values['counter_enabled'])
+      // ->set('counter.entity_types', array_filter($values['entity_types']))
+      ->set('counter.entity_types', ['node'])
       ->set('privacy.disablecookies', $values['visitors_privacy_disablecookies'])
       ->set('disable_tracking', $values['visitors_disable_tracking'])
       ->set('visibility.request_path_mode', $values['visitors_visibility_request_path_mode'])
       ->set('visibility.request_path_pages', $values['visitors_visibility_request_path_pages'])
       ->set('visibility.user_account_mode', $values['visitors_visibility_user_account_mode'])
       ->set('visibility.user_role_mode', $values['visitors_visibility_user_role_mode'])
-      ->set('visibility.user_role_roles', $values['visitors_visibility_user_role_roles'])
+      ->set('visibility.user_role_roles', array_filter($values['visitors_visibility_user_role_roles']))
       ->set('visibility.exclude_user1', $values['visibility_exclude_user1'])
       ->set('status_codes_disabled', array_values(array_filter($values['status_codes_disabled'])))
       ->save();
@@ -584,6 +608,23 @@ class Settings extends ConfigFormBase {
     }
 
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Returns a list of entity types.
+   */
+  protected function entityTypes() {
+    $entity_types_list = [];
+    $entity_definitions = $this->entityTypeManager->getDefinitions();
+    foreach ($entity_definitions as $entity_name => $entity_definition) {
+      if ($entity_definition instanceof ConfigEntityType) {
+        continue;
+      }
+      $entity_types_list[$entity_name] = (string) $entity_definition->getLabel();
+    }
+    asort($entity_types_list);
+
+    return $entity_types_list;
   }
 
 }

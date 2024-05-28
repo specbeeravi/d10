@@ -37,6 +37,11 @@ class VisitorThemeNegotiator implements ThemeNegotiatorInterface {
       if (strpos($route_name, 'visitors.') === 0) {
         return TRUE;
       }
+      $path = $route_match->getRouteObject()->getPath();
+      if (strpos($path, '/visitors') === 0) {
+        return TRUE;
+      }
+
     }
     return FALSE;
   }

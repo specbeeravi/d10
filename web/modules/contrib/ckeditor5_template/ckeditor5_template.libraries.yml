@@ -1,6 +1,6 @@
 template:
   js:
-    js/build/template.js: { minified: true }
+    js/template.js: { minified: true }
   css:
     theme:
       css/layout.css: {}

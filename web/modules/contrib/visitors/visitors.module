@@ -6,7 +6,10 @@
  */
 
 use Drupal\Core\Database\Database;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
 use Drupal\visitors\Component\Render\JavaScriptSnippet;
 use Drupal\visitors\Form\Settings;
 
@@ -31,16 +34,27 @@ function visitors_theme(): array {
  * Implements hook_cron().
  */
 function visitors_cron(): void {
-  $flush_log_timer = \Drupal::config('visitors.config')
-    ->get('flush_log_timer') ?? 0;
+  try {
+    $flush_log_timer = \Drupal::config('visitors.config')
+      ->get('flush_log_timer') ?? 0;
 
-  if ($flush_log_timer > 0) {
-    $delete_since = (string) time() - $flush_log_timer;
-    // Clean up expired access logs.
-    \Drupal::database()->delete('visitors')
-      ->condition('visitors_date_time', $delete_since, '<')
-      ->execute();
+    if ($flush_log_timer > 0) {
+      $delete_since = (string) time() - $flush_log_timer;
+      // Clean up expired access logs.
+      \Drupal::database()->delete('visitors')
+        ->condition('visitors_date_time', $delete_since, '<')
+        ->execute();
+    }
+
+    $storage = \Drupal::service('visitors.counter');
+    $storage->resetDayCount();
+    $max_total_count = $storage->maxTotalCount('node');
+    \Drupal::state()->set('visitors.node_counter_scale', 1.0 / max(1.0, $max_total_count));
   }
+  catch (\Exception $e) {
+    watchdog_exception('visitors', $e);
+  }
+
 }
 
 /**
@@ -270,26 +284,31 @@ function visitors_set_session_date_range() {
  * Implements hook_page_attachment_alter().
  */
 function visitors_page_attachments_alter(array &$page) {
-  /** @var \Drupal\visitors\VisitorsVisibilityInterface $visibility_service */
-  $visibility_service = \Drupal::service('visitors.visibility');
-  if (!$visibility_service->isVisible()) {
-    return NULL;
-  }
-  /** @var \Drupal\visitors\VisitorsScriptInterface $script_service */
-  $script_service = \Drupal::service('visitors.script');
-  // Add module cache tags.
-  $tags = $page['#cache']['tags'] ?? [];
-  $page['#cache']['tags'] = $script_service->cacheTags($tags);
+  try {
+    /** @var \Drupal\visitors\VisitorsVisibilityInterface $visibility_service */
+    $visibility_service = \Drupal::service('visitors.visibility');
+    if (!$visibility_service->isVisible()) {
+      return NULL;
+    }
+    /** @var \Drupal\visitors\VisitorsScriptInterface $script_service */
+    $script_service = \Drupal::service('visitors.script');
+    // Add module cache tags.
+    $tags = $page['#cache']['tags'] ?? [];
+    $page['#cache']['tags'] = $script_service->cacheTags($tags);
 
-  $script = $script_service->script();
-  // Add tracker code.
-  $page['#attached']['html_head'][] = [
-    [
-      '#tag' => 'script',
-      '#value' => new JavaScriptSnippet($script),
-    ],
-    'visitors_tracking_script',
-  ];
+    $script = $script_service->script();
+    // Add tracker code.
+    $page['#attached']['html_head'][] = [
+      [
+        '#tag' => 'script',
+        '#value' => new JavaScriptSnippet($script),
+      ],
+      'visitors_tracking_script',
+    ];
+  }
+  catch (\Exception $e) {
+    watchdog_exception('visitors', $e);
+  }
 
 }
 
@@ -299,54 +318,199 @@ function visitors_page_attachments_alter(array &$page) {
  * Allow users to decide if tracking code will be added to pages or not.
  */
 function visitors_form_user_form_alter(&$form, FormStateInterface $form_state) {
-  $config = \Drupal::config('visitors.config');
-  /** @var \Drupal\user\AccountForm $userform */
-  $user_form = $form_state->getFormObject();
-  /** @var \Drupal\user\UserInterface $account */
-  $account = $user_form->getEntity();
-  $visibility_users = $config->get('visibility.user_account_mode');
-  if ($account->hasPermission('opt-out of visitors tracking') && $visibility_users != 0) {
-    $account_data_visitors = \Drupal::service('user.data')->get('visitors', $account->id());
+  try {
+    $config = \Drupal::config('visitors.config');
+    /** @var \Drupal\user\AccountForm $user_form */
+    $user_form = $form_state->getFormObject();
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $user_form->getEntity();
+    $visibility_users = $config->get('visibility.user_account_mode');
+    if ($account->hasPermission('opt-out of visitors tracking') && $visibility_users != 0) {
+      $account_data_visitors = \Drupal::service('user.data')->get('visitors', $account->id());
 
-    $form['visitors'] = [
-      '#type' => 'details',
-      '#title' => t('Visitors settings'),
-      '#weight' => 3,
-      '#open' => TRUE,
-    ];
-    $description = '';
-    switch ($visibility_users) {
-      case Settings::VISIBILITY_USER_ACCOUNT_MODE_OPT_OUT:
-        $description = t('Users are tracked by default, but you are able to opt out.');
-        break;
+      $form['visitors'] = [
+        '#type' => 'details',
+        '#title' => t('Visitors settings'),
+        '#weight' => 3,
+        '#open' => TRUE,
+      ];
+      $description = '';
+      switch ($visibility_users) {
+        case Settings::VISIBILITY_USER_ACCOUNT_MODE_OPT_OUT:
+          $description = t('Users are tracked by default, but you are able to opt out.');
+          break;
 
-      case Settings::VISIBILITY_USER_ACCOUNT_MODE_OPT_IN:
-        $description = t('Users are <em>not</em> tracked by default, but you are able to opt in.');
-        break;
+        case Settings::VISIBILITY_USER_ACCOUNT_MODE_OPT_IN:
+          $description = t('Users are <em>not</em> tracked by default, but you are able to opt in.');
+          break;
+      }
+
+      $form['visitors']['user_account_users'] = [
+        '#type' => 'checkbox',
+        '#title' => t('Enable user tracking'),
+        '#description' => $description,
+        '#default_value' => $account_data_visitors['user_account_users'] ?? ($visibility_users == 1),
+      ];
+
+      // Custom submit handler.
+      $form['actions']['submit']['#submit'][] = 'visitors_user_profile_form_submit';
     }
-
-    $form['visitors']['user_account_users'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Enable user tracking'),
-      '#description' => $description,
-      '#default_value' => $account_data_visitors['user_account_users'] ?? ($visibility_users == 1),
-    ];
-
-    // Custom submit handler.
-    $form['actions']['submit']['#submit'][] = 'visitors_user_profile_form_submit';
   }
+  catch (\Exception $e) {
+    watchdog_exception('visitors', $e);
+  }
+
 }
 
 /**
  * Submit callback for user profile form to save the Visitor setting.
  */
 function visitors_user_profile_form_submit($form, FormStateInterface $form_state) {
-  /** @var \Drupal\user\AccountForm $user_form */
-  $user_form = $form_state->getFormObject();
-  /** @var \Drupal\user\UserInterface $account */
-  $account = $user_form->getEntity();
-  if ($account->id() && $form_state->hasValue('user_account_users')) {
-    \Drupal::service('user.data')->set('visitors', $account->id(), 'user_account_users', (int) $form_state->getValue('user_account_users'));
+  try {
+    /** @var \Drupal\user\AccountForm $user_form */
+    $user_form = $form_state->getFormObject();
+    /** @var \Drupal\user\UserInterface $account */
+    $account = $user_form->getEntity();
+    if ($account->id() && $form_state->hasValue('user_account_users')) {
+      $value = (int) $form_state->getValue('user_account_users');
+      \Drupal::service('user.data')
+        ->set('visitors', $account->id(), 'user_account_users', $value);
+    }
+
+  }
+  catch (\Exception $e) {
+    watchdog_exception('visitors', $e);
+  }
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function visitors_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  try {
+
+    if ($view_mode != 'full') {
+      return NULL;
+    }
+    if ($entity->isNew()) {
+      return NULL;
+    }
+
+    $settings = \Drupal::config('visitors.config');
+    $enabled = $settings->get('counter.enabled');
+    $entity_types = $settings->get('counter.entity_types') ?? [];
+    $entity_type = $entity->getEntityTypeId();
+    $entity_is_tracked = in_array($entity_type, $entity_types);
+    if (!$enabled || !$entity_is_tracked) {
+      return NULL;
+    }
+
+    $route_match = \Drupal::routeMatch();
+    $entity_route_name = "entity.$entity_type.canonical";
+    if ($route_match->getRouteName() != $entity_route_name) {
+      return NULL;
+    }
+
+    $page_entity = $route_match->getParameter($entity_type);
+    if ($page_entity->id() != $entity->id()) {
+      return NULL;
+    }
+
+    if ($entity_type == 'node') {
+      if (!empty($entity->in_preview)) {
+        return NULL;
+      }
+    }
+
+    $counter = \Drupal::service('visitors.counter');
+    $counter->addEntity($entity_type, $entity->id());
+  }
+  catch (\Exception $e) {
+    watchdog_exception('visitors', $e);
   }
 
+}
+
+/**
+ * Implements hook_node_links_alter().
+ */
+function visitors_node_links_alter(array &$links, NodeInterface $entity, array &$context) {
+  if ($context['view_mode'] != 'rss') {
+    $links['#cache']['contexts'][] = 'user.permissions';
+    if (\Drupal::currentUser()->hasPermission('view visitors counter')) {
+      $settings = \Drupal::config('visitors.config');
+      $entity_types = $settings->get('counter.entity_types') ?? [];
+      $show_node_view = $settings->get('counter.enabled')
+        && in_array('node', $entity_types);
+
+      if (!$show_node_view) {
+        return NULL;
+      }
+      try {
+        $statistics = \Drupal::service('visitors.counter')
+          ->fetchView('node', $entity->id());
+        if ($statistics) {
+          $statistics_links['visitors_counter']['title'] = \Drupal::translation()
+            ->formatPlural($statistics->getTotalCount(), '1 view', '@count views');
+          $links['visitors'] = [
+            '#theme' => 'links__node__visitors',
+            '#links' => $statistics_links,
+            '#attributes' => ['class' => ['links', 'inline']],
+          ];
+        }
+        $links['#cache']['max-age'] = \Drupal::config('counter.display_max_age')
+          ->get('display_max_age');
+      }
+      catch (\Exception $e) {
+        watchdog_exception('visitors', $e);
+      }
+
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function visitors_entity_delete(EntityInterface $entity) {
+  $settings = \Drupal::config('visitors.config');
+  $entity_types = $settings->get('counter.entity_types') ?? [];
+  $entity_type = $entity->getEntityTypeId();
+  $is_enabled_and_has_entity_types = $settings->get('counter.enabled')
+    && in_array($entity_type, $entity_types);
+  if ($is_enabled_and_has_entity_types) {
+    \Drupal::service('visitors.counter')
+      ->deleteViews($entity_type, $entity->id());
+  }
+
+}
+
+/**
+ * Implements hook_ranking().
+ */
+function visitors_ranking() {
+  $settings = \Drupal::config('visitors.config');
+  $is_enabled_and_has_node_entity_type = $settings->get('counter.enabled')
+    && in_array('node', $settings->get('counter.entity_types'));
+  if ($is_enabled_and_has_node_entity_type) {
+    return [
+      'views' => [
+        'title' => t('Number of views'),
+        'join' => [
+          'type' => 'LEFT',
+          'table' => 'visitors_counter',
+          'alias' => 'visitors_counter',
+          'on' => "visitors_counter.entity_id = i.sid AND visitors_counter.entity_type = 'node'",
+        ],
+        // Inverse law that maps the highest view count on the site to 1 and 0
+        // to 0. Note that the ROUND here is necessary for PostgreSQL and SQLite
+        // in order to ensure that the :statistics_scale argument is treated as
+        // a numeric type, because the PostgreSQL PDO driver sometimes puts
+        // values in as strings instead of numbers in complex expressions like
+        // this.
+        'score' => '2.0 - 2.0 / (1.0 + visitors_counter.total * (ROUND(:statistics_scale, 4)))',
+        'arguments' => [':statistics_scale' => \Drupal::state()->get('visitors.node_counter_scale', 0)],
+      ],
+    ];
+  }
 }

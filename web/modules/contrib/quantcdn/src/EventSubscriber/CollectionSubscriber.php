@@ -6,18 +6,17 @@ use Drupal\quant\Event\CollectEntitiesEvent;
 use Drupal\quant\Event\CollectFilesEvent;
 use Drupal\quant\Event\CollectRedirectsEvent;
 use Drupal\quant\Event\CollectRoutesEvent;
+use Drupal\quant\Event\CollectTaxonomyTermsEvent;
 use Drupal\quant\Event\QuantCollectionEvents;
-use Drupal\quant\Plugin\QueueItem\RedirectItem;
+use Drupal\quant\Utility;
 use Drupal\user\Entity\User;
 use Drupal\views\Views;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\quant\Seed;
 use Drupal\redirect\Entity\Redirect;
-use Drupal\quant\QuantQueueFactory;
 
 /**
  * Event subscribers for the quant collection events.
@@ -51,6 +50,7 @@ class CollectionSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events[QuantCollectionEvents::ENTITIES][] = ['collectEntities'];
+    $events[QuantCollectionEvents::TAXONOMY_TERMS][] = ['collectTaxonomyTerms'];
     $events[QuantCollectionEvents::FILES][] = ['collectFiles'];
     $events[QuantCollectionEvents::REDIRECTS][] = ['collectRedirects'];
     $events[QuantCollectionEvents::ROUTES][] = ['collectRoutes'];
@@ -65,7 +65,6 @@ class CollectionSubscriber implements EventSubscriberInterface {
    */
   public function collectEntities(CollectEntitiesEvent $event) {
     $query = $this->entityTypeManager->getStorage('node')->getQuery();
-    $disable_drafts = $this->configFactory->get('quant.settings')->get('disable_content_drafts');
 
     $bundles = $event->getFormState()->getValue('entity_node_bundles');
 
@@ -114,11 +113,25 @@ class CollectionSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Collect taxonomy terms.
+   */
+  public function collectTaxonomyTerms(CollectTaxonomyTermsEvent $event) {
+    $query = $this->entityTypeManager->getStorage('taxonomy_term')->getQuery();
+    $terms = $query->accessCheck(TRUE)->execute();
+
+    foreach ($terms as $tid) {
+      $event->queueItem([
+        'tid' => $tid,
+      ]);
+    }
+  }
+
+  /**
    * Identify redirects.
    */
   public function collectRedirects(CollectRedirectsEvent $event) {
     $query = $this->entityTypeManager->getStorage('redirect')->getQuery();
-    $ids = $query->execute();
+    $ids = $query->accessCheck(TRUE)->execute();
 
     foreach ($ids as $id) {
       $redirect = Redirect::load($id);
@@ -224,64 +237,15 @@ class CollectionSubscriber implements EventSubscriberInterface {
    * Collect the standard routes.
    */
   public function collectRoutes(CollectRoutesEvent $event) {
-    // Collect the site configured routes.
-    $system = $this->configFactory->get('system.site');
-    $system_pages = ['page.front', 'page.404', 'page.403'];
+    // Handle unpublished content based on settings.
+    $disable_drafts = $this->configFactory->get('quant.settings')->get('disable_content_drafts');
 
-    foreach ($system_pages as $config) {
-      $system_path = $system->get($config);
-      if (!empty($system_path)) {
-        $event->queueItem(['route' => $system_path]);
-      }
-    }
-
-    // Quant pages.
-    $quant_pages = ['/', '/_quant404', '/_quant403'];
-
-    foreach ($quant_pages as $page) {
+    // Add special Quant pages.
+    foreach (Utility::getSpecialPages() as $page) {
       $event->queueItem(['route' => $page]);
     }
 
-    if ($event->getFormState()->getValue('entity_taxonomy_term')) {
-      $taxonomy_storage = $this->entityTypeManager->getStorage('taxonomy_term');
-
-      foreach ($taxonomy_storage->loadMultiple() as $term) {
-        foreach ($term->getTranslationLanguages() as $langcode => $language) {
-          // Retrieve the translated version.
-          $term = $term->getTranslation($langcode);
-          $tid = $term->id();
-
-          $options = ['absolute' => FALSE];
-
-          if (!empty($langcode)) {
-            $language = \Drupal::languageManager()->getLanguage($langcode);
-            $options['language'] = $language;
-          }
-
-          $url = Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $tid], $options)->toString();
-          $event->queueItem(['route' => $url]);
-
-          // Generate a redirection QueueItem from canonical path to URL.
-          // Use the default language alias in the event of multi-lang setup.
-          $queue_factory = QuantQueueFactory::getInstance();
-          $queue = $queue_factory->get('quant_seed_worker');
-
-          if ("/taxonomy/term/{$tid}" != $url) {
-            $defaultLanguage = \Drupal::languageManager()->getDefaultLanguage();
-            $defaultUrl = Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $tid], ['language' => $defaultLanguage])->toString();
-
-            $redirectItem = new RedirectItem([
-              'source' => "/taxonomy/term/{$tid}",
-              'destination' => $defaultUrl,
-              'status_code' => 301,
-            ]);
-
-            $queue->createItem($redirectItem);
-          }
-        }
-      }
-    }
-
+    // Add custom routes.
     if ($event->getFormState()->getValue('routes')) {
       foreach (explode(PHP_EOL, $event->getFormState()->getValue('routes_textarea')) as $route) {
         if (strpos((trim($route)), '/') !== 0) {
@@ -291,15 +255,22 @@ class CollectionSubscriber implements EventSubscriberInterface {
       }
     }
 
+    // Add robots.txt file.
     if ($event->getFormState()->getValue('robots')) {
       $event->queueItem(['route' => '/robots.txt']);
     }
 
+    // Add views pages.
+    // @todo Allow disabled views pages if disable_content_drafts is false?
     if ($event->getFormState()->getValue('views_pages')) {
       $views_storage = $this->entityTypeManager->getStorage('view');
       $anon = User::getAnonymousUser();
 
       foreach ($views_storage->loadMultiple() as $view) {
+        if ($view->get('id') == 'taxonomy_term') {
+          // Taxonomy terms are handled as entities.
+          continue;
+        }
         $view = Views::getView($view->get('id'));
 
         $paths = [];
@@ -327,10 +298,12 @@ class CollectionSubscriber implements EventSubscriberInterface {
             $base = \Drupal::request()->getBaseUrl();
             $event->queueItem(['route' => $base . "/{$path}"]);
 
-            // Languge negotiation may also provide path prefixes.
+            // Language negotiation may also provide path prefixes.
             if ($prefixes = \Drupal::config('language.negotiation')->get('url.prefixes')) {
               foreach ($prefixes as $prefix) {
-                $event->queueItem(['route' => "/{$prefix}/{$path}"]);
+                if ($prefix) {
+                  $event->queueItem(['route' => "/{$prefix}/{$path}"]);
+                }
               }
             }
           }

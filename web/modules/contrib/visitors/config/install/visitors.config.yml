@@ -16,6 +16,11 @@ status_codes_disabled: {}
 domain_mode: 0
 track:
   userid: true
+counter:
+  enabled: true
+  entity_types:
+    - 'node'
+  display_max_age: 3600
 privacy:
   disablecookies: false
 visibility:

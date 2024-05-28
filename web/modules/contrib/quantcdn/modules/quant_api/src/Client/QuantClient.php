@@ -18,11 +18,25 @@ use GuzzleHttp\RequestOptions;
 class QuantClient implements QuantClientInterface {
 
   /**
+   * The configuration object for Quant API.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
    * The logger service.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected $logger;
+
+  /**
+   * The Guzzle client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  protected $client;
 
   /**
    * The client account.
@@ -63,15 +77,40 @@ class QuantClient implements QuantClientInterface {
    * {@inheritdoc}
    */
   public function __construct(Client $client, ConfigFactoryInterface $config_factory, LoggerChannelFactoryInterface $logger_factory) {
-    $config = $config_factory->get('quant_api.settings');
+    $this->config = $config_factory->get('quant_api.settings');
     $this->client = $client;
     $this->logger = $logger_factory->get('quant_api');
 
-    $this->username = $config->get('api_account');
-    $this->token = $config->get('api_token');
-    $this->project = $config->get('api_project');
-    $this->endpoint = $config->get('api_endpoint') . '/v1';
-    $this->tlsDisabled = $config->get('api_tls_disabled');
+    $this->username = $this->config->get('api_account');
+    $this->token = $this->config->get('api_token');
+    $this->project = $this->config->get('api_project');
+    $this->endpoint = $this->config->get('api_endpoint') . '/v1';
+    $this->tlsDisabled = $this->config->get('api_tls_disabled');
+  }
+
+  /**
+   * Get API overrides.
+   */
+  public function getOverrides() {
+    // Note this has to be processed in this class instead of in the
+    // SettingsForm because the overrides aren't available in the form.
+    $overrides = [];
+    $keys = [
+      'api_endpoint',
+      'api_account',
+      'api_project',
+      'api_token',
+      'api_tls_disabled',
+    ];
+    foreach ($keys as $key) {
+      $original = $this->config->getOriginal($key, FALSE);
+      $active = $this->config->get($key);
+      if ($original != $active) {
+        $overrides[$key] = $active;
+      }
+    }
+
+    return $overrides;
   }
 
   /**
@@ -284,6 +323,36 @@ class QuantClient implements QuantClientInterface {
     $response = $this->client->patch($this->endpoint . '/unpublish', [
       'headers' => [
         'Quant-Url' => $url,
+        'Quant-Customer' => $this->username,
+        'Quant-Project'  => $this->project,
+        'Quant-Token'    => $this->token,
+      ],
+      'verify' => $this->tlsDisabled ? FALSE : TRUE,
+    ]);
+
+    return json_decode($response->getBody(), TRUE);
+  }
+
+  /**
+   * Gets global metadata for the given URLs.
+   *
+   * @param array $urls
+   *   The urls to get metadata for.
+   *
+   * @return array
+   *   The API response.
+   */
+  public function getUrlMeta(array $urls) : array {
+    // Format array if it's not already.
+    if (!array_key_exists('Quant-Url', $urls)) {
+      $urls = [
+        'Quant-Url' => $urls,
+      ];
+    }
+    // @todo Switch from 'Quant-Customer' to 'Quant-Organization'.
+    $response = $this->client->post($this->endpoint . '/url-meta', [
+      RequestOptions::JSON => $urls,
+      'headers' => [
         'Quant-Customer' => $this->username,
         'Quant-Project'  => $this->project,
         'Quant-Token'    => $this->token,

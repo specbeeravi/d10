@@ -107,6 +107,17 @@
         return Drupal.t('@items disabled', {'@items': vals.join(', ')});
       });
 
+      $('#edit-entity').drupalSetSummary(function (context) {
+        var vals = [];
+        if (!$('input#edit-counter-enabled', context).is(':checked')) {
+          vals.push(Drupal.t('Disabled'));
+        }
+        if (!vals.length) {
+          return Drupal.t('Default');
+        }
+        return Drupal.t('@items', {'@items': vals.join(', ')});
+      });
+
     }
   };
 

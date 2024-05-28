@@ -2,9 +2,9 @@
 
 namespace Drupal\visitors_geoip\Service;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\visitors_geoip\VisitorsGeoIpInterface;
 use GeoIp2\Database\Reader;
-use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * GeoIp lookup Service.

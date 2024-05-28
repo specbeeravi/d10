@@ -5,11 +5,11 @@
  * Add template file for the social buttons.
  */
 
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\NodeType;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 
 /**
  * Implements hook_theme().
@@ -56,11 +56,12 @@ function better_social_sharing_buttons_node_view(array &$build, EntityInterface 
     $items = [];
     global $base_url;
 
-    // It is impossible to generate canonical absolute URL for the entity without
-    // ID - it will trigger EntityMalformedException with the following message:
-    // "The entity cannot have a URI as it does not have an ID", so instead we
-    // use website base URL to render buttons during preview, as this is the only
-    // time when entity could be rendered without being saved and have an ID.
+    // It is impossible to generate canonical absolute URL for the entity
+    // without ID - it will trigger EntityMalformedException with the following
+    // message: "The entity cannot have a URI as it does not have an ID", so
+    // instead we use website base URL to render buttons during preview, as this
+    // is the only time when entity could be rendered without being saved and
+    // have an ID.
     $items['page_url'] = $entity->id() ? $entity->toUrl('canonical', ['absolute' => TRUE]) : $base_url;
     $items['description'] = '';
     $items['title'] = $entity->get('title')->value;
@@ -106,7 +107,7 @@ function better_social_sharing_buttons_help($route_name, RouteMatchInterface $ro
       $output .= '<p>' . t('*NOTE: This module was initially meant to be used on node detail pages because it gets the title and url for sharing from the current node.*') . '</p>';
       $output .= '<p>' . t('*It is possible to add sharing buttons on teasers. A separate twig file was created for this so you can include this and pass the necessary parameters to it (title, url, description). On your teaser twig file, you can use this as follows:*') . '</p>';
       $output .= '<code>' . "{# -- Social sharing buttons -- #}<br>
-{% set services = ['facebook', 'twitter', 'email', 'linkedin'] %}<br>
+{% set services = ['facebook', 'x', 'email', 'linkedin'] %}<br>
 {% include '/modules/contrib/better_social_sharing_buttons/templates/better-social-sharing-buttons.html.twig' with {<br>
   'title': item.title,<br>
   'url': item.url,<br>

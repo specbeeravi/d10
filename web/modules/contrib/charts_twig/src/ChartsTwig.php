@@ -58,6 +58,9 @@ class ChartsTwig extends AbstractExtension {
         '#title' => !empty($chart_datum['title']) ? Xss::filter($chart_datum['title'])  : '',
         '#data' => $chart_datum['data'] ?? [],
       ];
+      if (!empty($chart_datum['color'])) {
+        $chart[$id]['series_' . $key]['#color'] = $chart_datum['color'];
+      }
     }
     $chart[$id]['xaxis'] = [
       '#type' => 'chart_xaxis',

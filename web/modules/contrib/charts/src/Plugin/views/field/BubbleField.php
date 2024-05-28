@@ -2,6 +2,7 @@
 
 namespace Drupal\charts\Plugin\views\field;
 
+use Drupal\charts\ChartViewsFieldInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @ingroup views_field_handlers
  * @ViewsField("field_charts_fields_bubble")
  */
-class BubbleField extends FieldPluginBase implements ContainerFactoryPluginInterface {
+class BubbleField extends FieldPluginBase implements ContainerFactoryPluginInterface, ChartViewsFieldInterface {
 
   /**
    * The messenger service.
@@ -177,7 +178,7 @@ class BubbleField extends FieldPluginBase implements ContainerFactoryPluginInter
     }
 
     // Ensure the input is numeric.
-    if (!is_numeric($data)) {
+    if (!empty($data) && !is_numeric($data)) {
       $this->messenger->addError($this->t('Check the formatting of your
         Bubble Field inputs: one or both of them are not numeric.'));
     }
@@ -202,6 +203,16 @@ class BubbleField extends FieldPluginBase implements ContainerFactoryPluginInter
       Json::decode($yAxisFieldValue),
       Json::decode($zAxisFieldValue),
     ]);
+  }
+
+  /**
+   * Set the data type for the chart field to be an array.
+   *
+   * @return string
+   *   The data type.
+   */
+  public function getChartFieldDataType(): string {
+    return 'array';
   }
 
 }

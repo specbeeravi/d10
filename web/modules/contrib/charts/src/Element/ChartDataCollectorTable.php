@@ -123,7 +123,7 @@ class ChartDataCollectorTable extends FormElement {
       '#header' => [],
       '#responsive' => FALSE,
       '#attributes' => [
-        'class' => 'data-collector-table',
+        'class' => ['data-collector-table'],
       ],
     ];
 
@@ -501,15 +501,16 @@ class ChartDataCollectorTable extends FormElement {
       $submit['#wrapper_attributes'] = $wrapper_attributes;
     }
 
+    $value = [];
+    $value['add']['row'] = t('Add row');
+    $value['add']['column'] = t('Add column');
+    $value['delete']['row'] = t('Delete row');
+    $value['delete']['column'] = t('Delete column');
+
     $submit += [
       '#type' => 'submit',
       '#name' => $name,
-      '#value' => match(TRUE) {
-        $operation === 'add' && $on === 'row' => t('Add row'),
-        $operation === 'add' && $on === 'column' => t('Add column'),
-        $operation === 'delete' && $on === 'row' => t('Delete row'),
-        default => t('Delete column'),
-      },
+      '#value' => $value[$operation][$on],
       '#limit_validation_errors' => [],
       '#submit' => [[get_called_class(), 'tableOperationSubmit']],
       '#operation' => $operation,
@@ -822,6 +823,16 @@ class ChartDataCollectorTable extends FormElement {
             }
           }
         }
+        // Adding a couple types not currently supported but hopefully soon.
+        if (in_array($type, [
+          'scatter',
+          'bubble',
+          'candlestick',
+          'boxplot',
+        ])) {
+          // Enclose the data value in an array.
+          $series[$i]['data'] = [$series[$i]['data']];
+        }
       }
       else {
         $j = 0;
@@ -842,6 +853,14 @@ class ChartDataCollectorTable extends FormElement {
             if ($is_single_axis) {
               $series[$j]['data'][] = [$series[$j]['name'], $cell_value];
               $series[$j]['title'][] = $row[0]['data'];
+            }
+            elseif (in_array($type, [
+              'scatter',
+              'bubble',
+              'candlestick',
+              'boxplot',
+            ])) {
+              $series[$j]['data'][0][] = $cell_value;
             }
             else {
               $series[$j]['data'][] = $cell_value;

@@ -19,6 +19,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Token;
 use Drupal\node\NodeInterface;
+use Drupal\visitors\VisitorsCounterInterface;
 use Drupal\visitors\VisitorsScriptInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -106,6 +107,13 @@ class ScriptService implements VisitorsScriptInterface {
   protected $entityRepository;
 
   /**
+   * The counter service.
+   *
+   * @var \Drupal\visitors\VisitorsCounterInterface
+   */
+  protected $counter;
+
+  /**
    * The config object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -130,6 +138,8 @@ class ScriptService implements VisitorsScriptInterface {
    *   The current route match.
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   The entity repository.
+   * @param \Drupal\visitors\VisitorsCounterInterface $counter
+   *   The counter service.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
@@ -143,6 +153,7 @@ class ScriptService implements VisitorsScriptInterface {
     SessionConfigurationInterface $session_config,
     CurrentRouteMatch $current_route_match,
     EntityRepositoryInterface $entity_repository,
+    VisitorsCounterInterface $counter
   ) {
     $this->config = $config_factory->get('visitors.config');
     $this->currentUser = $current_user;
@@ -155,12 +166,15 @@ class ScriptService implements VisitorsScriptInterface {
     $this->sessionConfig = $session_config;
     $this->currentRouteMatch = $current_route_match;
     $this->entityRepository = $entity_repository;
+    $this->counter = $counter;
   }
 
   /**
    * {@inheritdoc}
    */
   public function script(): string {
+    $viewed_entities = $this->counter->getEntities();
+
     // Get page http status code for visibility filtering.
     $status = NULL;
     $exception = $this->request->attributes->get('exception');
@@ -287,6 +301,9 @@ class ScriptService implements VisitorsScriptInterface {
     }
     $custom_variable .= '_paq.push(["setCustomVariable", ' . Json::encode(++$i) . ', ' . Json::encode('route') . ', ' . Json::encode($this->currentRouteMatch->getRouteName()) . ', ' . Json::encode('visit') . ']);';
     $custom_variable .= '_paq.push(["setCustomVariable", ' . Json::encode(++$i) . ', ' . Json::encode('path') . ', ' . Json::encode($this->path) . ', ' . Json::encode('visit') . ']);';
+    if ($viewed_entities) {
+      $custom_variable .= '_paq.push(["setCustomVariable", ' . Json::encode(++$i) . ', ' . Json::encode('viewed') . ', ' . Json::encode($viewed_entities) . ', ' . Json::encode('visit') . ']);';
+    }
 
     // $current_path = \Drupal::service('path.current')->getPath();
     // Add any custom code snippets if specified.

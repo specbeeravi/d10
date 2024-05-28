@@ -4,11 +4,11 @@ namespace Drupal\Tests\visitors\Unit\Controller\Report;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Form\FormInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\visitors\Controller\Report\Hosts;
 use Drupal\visitors\VisitorsReportInterface;
-use Drupal\Core\Form\FormInterface;
 
 /**
  * Unit tests for the Hosts controller.

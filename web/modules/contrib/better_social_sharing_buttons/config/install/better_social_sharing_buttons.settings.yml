@@ -1,7 +1,7 @@
 iconset: social-icons--square
 services:
   facebook: 'facebook'
-  twitter: 'twitter'
+  x: 'x'
   email: 'email'
   linkedin: 'linkedin'
 width: 20px

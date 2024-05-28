@@ -15,7 +15,7 @@ function better_social_sharing_buttons_update_8001() {
   if (!$services) {
     $services = [
       'facebook' => 'facebook',
-      'twitter' => 'twitter',
+      'x' => 'x',
       'linkedin' => 'linkedin',
       'email' => 'email',
     ];
@@ -79,4 +79,53 @@ function better_social_sharing_buttons_update_8004() {
     $block->set('settings', $config)->save();
   }
 
+}
+
+/**
+ * Removes digg service configuration.
+ */
+function better_social_sharing_buttons_update_8005() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('better_social_sharing_buttons.settings');
+  $config->clear('services.digg')->save();
+
+  // Updates the block configuration.
+  $block_storage = \Drupal::service('entity_type.manager')->getStorage('block');
+  $blocks = $block_storage->loadByProperties(['plugin' => 'social_sharing_buttons_block']);
+  foreach ($blocks as $block) {
+    $config = $block->get('settings');
+    $services = $config['services'];
+    unset($services['digg']);
+    $config['services'] = $services;
+    $block->set('settings', $config)->save();
+  }
+}
+
+/**
+ * Replaces twitter service with X.
+ */
+function better_social_sharing_buttons_update_8006() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('better_social_sharing_buttons.settings');
+  $services = $config->get('services');
+  if (isset($services['twitter'])) {
+    $config
+      ->clear('services.twitter')
+      ->set('services.x', 'x')
+      ->save();
+  }
+
+  // Updates the block configuration.
+  $block_storage = \Drupal::service('entity_type.manager')->getStorage('block');
+  $blocks = $block_storage->loadByProperties(['plugin' => 'social_sharing_buttons_block']);
+  foreach ($blocks as $block) {
+    $config = $block->get('settings');
+    $services = $config['services'];
+    if (in_array('twitter', $services)) {
+      unset($services['twitter']);
+      $services['x'] = 'x';
+      $config['services'] = $services;
+      $block->set('settings', $config)->save();
+    }
+  }
 }

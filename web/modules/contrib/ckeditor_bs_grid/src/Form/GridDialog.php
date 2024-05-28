@@ -264,10 +264,21 @@ class GridDialog extends FormBase {
         $options[implode('_', $layout['settings'])] = $layout['label'];
       }
 
+      // Set the default to none unless there's settings.
+      $default_layout = 'none';
+      if (!empty($settings['breakpoints'][$prefix]['layout'])) {
+        $default_layout = $settings['breakpoints'][$prefix]['layout'];
+      }
+      // Allow defaulting by sort order instead.
+      elseif ($breakpoint['columns'][$num_cols]['default_layout'] === 'order') {
+        $keys = array_keys($options);
+        $default_layout = $keys[1] ?? $default_layout;
+      }
+
       $form['breakpoints'][$prefix]['layout'] = [
         '#type' => 'radios',
         '#options' => $options,
-        '#default_value' => $settings['breakpoints'][$prefix]['layout'] ?? 'none',
+        '#default_value' => $default_layout,
         '#attributes' => [
           'data-bs-grid-option' => TRUE,
         ],

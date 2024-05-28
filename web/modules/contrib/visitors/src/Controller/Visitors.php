@@ -3,13 +3,13 @@
 namespace Drupal\visitors\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\visitors\VisitorsTrackerInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Vistors tracking controller.
+ * Visitors tracking controller.
  */
 class Visitors extends ControllerBase {
 
@@ -56,8 +56,8 @@ class Visitors extends ControllerBase {
    * Tracks visits.
    */
   public function track(): Response {
-
-    $this->tracker->log($this->stack->getCurrentRequest()->query->all());
+    $query = $this->stack->getCurrentRequest()->query->all();
+    $this->tracker->log($query);
 
     $response = new Response();
     $response->setContent('');

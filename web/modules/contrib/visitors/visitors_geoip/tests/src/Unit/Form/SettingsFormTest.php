@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\visitors_geoip\Unit\Form;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\visitors_geoip\Form\SettingsForm;
-use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Tests the Visitors Settings Form.

@@ -9,11 +9,17 @@ are already present on the page. Here's an example:
 
         {% set title = 'The Chart Title' %}
         {% set data = [10, 20, 30] %}
+        {% set data2 = [8, 14, 22] %}
         {%
           set series = {
-            'my_series' : {
-              'title' : 'What is being plotted',
-              'data' : data
+            'my_first_series' : {
+              'title' : 'My first series',
+              'data' : data,
+              'color': 'purple'
+            },
+            'my_second_series' : {
+              'title' : 'My second series',
+              'data' : data2
             }
           }
         %}

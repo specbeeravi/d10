@@ -123,6 +123,7 @@ class GeoReportService implements VisitorsGeoIpReportInterface {
     $query->orderByHeader($header);
     $query->limit($this->itemsPerPage);
 
+    /** @var \Drupal\Core\Database\Query\SelectInterface $count_query */
     $count_query = $this->database->select('visitors', 'v');
     $count_query->addExpression('COUNT(DISTINCT location_country_name)');
     visitors_date_filter_sql_condition($count_query);
@@ -156,7 +157,7 @@ class GeoReportService implements VisitorsGeoIpReportInterface {
    */
   public function cities(array $header, string $country) {
     $original_country = ($country == '(none)') ? '' : $country;
-
+    /** @var \Drupal\Core\Database\Query\SelectInterface $query */
     $query = $this->database->select('visitors', 'v')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
@@ -169,6 +170,7 @@ class GeoReportService implements VisitorsGeoIpReportInterface {
     $query->orderByHeader($header);
     $query->limit($this->itemsPerPage);
 
+    /** @var \Drupal\Core\Database\Query\SelectInterface $count_query */
     $count_query = $this->database->select('visitors', 'v');
     $count_query->addExpression('COUNT(DISTINCT location_city)');
     $count_query->condition('v.location_country_name', $original_country);
@@ -205,7 +207,7 @@ class GeoReportService implements VisitorsGeoIpReportInterface {
   public function cityHits(array $header, string $country, string $city) {
     $original_country = ($country == '(none)') ? '' : $country;
     $original_city = ($city == '(none)') ? '' : $city;
-
+    /** @var \Drupal\Core\Database\Query\SelectInterface $query */
     $query = $this->database->select('visitors', 'v')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
@@ -228,7 +230,7 @@ class GeoReportService implements VisitorsGeoIpReportInterface {
     visitors_date_filter_sql_condition($query);
     $query->orderByHeader($header);
     $query->limit($this->itemsPerPage);
-
+    /** @var \Drupal\Core\Database\Query\SelectInterface $count_query */
     $count_query = $this->database->select('visitors', 'v');
     $count_query->addExpression('COUNT(*)');
     $count_query->condition('v.location_country_name', $original_country);

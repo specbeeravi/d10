@@ -17,6 +17,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class QuantSearchPageForm extends EntityForm {
 
   /**
+   * The entity type manager.
+   *
+   * @var Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a QuantSearchPageForm object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -536,6 +543,7 @@ class QuantSearchPageForm extends EntityForm {
   public function exist($id) {
     $entity = $this->entityTypeManager->getStorage('quant_search_page')->getQuery()
       ->condition('id', $id)
+      ->accessCheck(TRUE)
       ->execute();
     return (bool) $entity;
   }

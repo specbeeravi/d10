@@ -1,0 +1,9 @@
+services:
+  visitors.commands.rebuild:
+    class: \Drupal\visitors\Commands\RebuildCommands
+    arguments:
+      - '@state'
+      - '@visitors.rebuild.route'
+      - '@visitors.rebuild.ip_address'
+    tags:
+      - { name: drush.command }

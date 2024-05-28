@@ -30,6 +30,13 @@ class UserActivity extends ControllerBase {
   protected $moduleHandler;
 
   /**
+   * The report service.
+   *
+   * @var \Drupal\visitors\VisitorsReportInterface
+   */
+  protected $report;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): UserActivity {

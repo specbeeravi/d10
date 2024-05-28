@@ -4,9 +4,9 @@ namespace Drupal\Tests\visitors_geoip\Unit\Controller;
 
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Tests\UnitTestCase;
 use Drupal\visitors_geoip\Controller\CityHits;
 use Drupal\visitors_geoip\VisitorsGeoIpReportInterface;
-use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the CityHits controller.

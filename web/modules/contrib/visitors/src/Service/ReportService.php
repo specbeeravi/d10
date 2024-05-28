@@ -2,11 +2,10 @@
 
 namespace Drupal\visitors\Service;
 
-use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Query\Condition;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -80,6 +79,20 @@ class ReportService implements VisitorsReportInterface {
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
+
+  /**
+   * The width of chart.
+   *
+   * @var int
+   */
+  protected $width;
+
+  /**
+   * The height of chart.
+   *
+   * @var int
+   */
+  protected $height;
 
   /**
    * Database Service Object.
@@ -296,7 +309,7 @@ class ReportService implements VisitorsReportInterface {
   /**
    * {@inheritdoc}
    */
-  public function hours(array $header = NULL) {
+  public function hours($header = NULL) {
     $query = $this->database->select('visitors', 'v');
     $query->addExpression('COUNT(*)', 'count');
     $query->addExpression(
@@ -424,11 +437,15 @@ class ReportService implements VisitorsReportInterface {
         ->getStorage('user')
         ->load($data->visitors_uid);
 
-      $visitors_host_url = Url::fromRoute('visitors.hit_details', ["hit_id" => $data->visitors_id]);
+      $visitors_host_url = Url::fromRoute('visitors.hit_details', [
+        'hit_id' => $data->visitors_id,
+      ]);
       $visitors_host_link = Link::fromTextAndUrl($this->t('Details'), $visitors_host_url);
       $visitors_host_link = $visitors_host_link->toRenderable();
 
-      $user_profile_url = Url::fromRoute('entity.user.canonical', ["user" => $user->id()]);
+      $user_profile_url = Url::fromRoute('entity.user.canonical', [
+        'user' => $user->id(),
+      ]);
       $user_profile_link = Link::fromTextAndUrl($user->getAccountName(), $user_profile_url);
       $user_profile_link = $user_profile_link->toRenderable();
       $i += 1;
@@ -436,7 +453,7 @@ class ReportService implements VisitorsReportInterface {
         $i,
         $data->visitors_id,
         $this->date->format($data->visitors_date_time, 'short'),
-        Html::escape($data->visitors_title) . " - " . $data->visitors_url,
+        $data->visitors_title . " - " . $data->visitors_url,
         $this->renderer->render($user_profile_link),
         $this->renderer->render($visitors_host_link),
       ];
@@ -700,23 +717,23 @@ class ReportService implements VisitorsReportInterface {
       // @todo make url, referer and username as link
       $array = [
         $this->t('URL')->render()        => $url,
-        $this->t('Title')->render()      => Html::escape($hit_details->visitors_title),
+        $this->t('Title')->render()      => ($hit_details->visitors_title ?? ''),
         $this->t('Referer')->render()    => $referer,
         $this->t('Date')->render()       => $date,
         $this->t('User')->render()       => $user->getAccountName(),
         $this->t('IP')->render()         => $whois_enable ? Link::fromTextAndUrl($ip, Url::fromUri('whois/' . $ip, $attr)) : $ip,
-        $this->t('User Agent')->render() => Html::escape($hit_details->visitors_user_agent),
+        $this->t('User Agent')->render() => ($hit_details->visitors_user_agent ?? ''),
       ];
 
       if ($this->moduleHandler->moduleExists('visitors_geoip')) {
         $geoip_data_array = [
-          $this->t('Country')->render()         => Html::escape($hit_details->location_country_name),
-          $this->t('Region')->render()          => Html::escape($hit_details->location_region),
-          $this->t('City')->render()            => Html::escape($hit_details->location_city),
-          $this->t('Postal Code')->render()     => Html::escape($hit_details->location_postal),
-          $this->t('Latitude')->render()        => Html::escape($hit_details->location_latitude),
-          $this->t('Longitude')->render()       => Html::escape($hit_details->location_longitude),
-          $this->t('PSTN Area Code')->render()  => Html::escape($hit_details->location_area_code),
+          $this->t('Country')->render()         => ($hit_details->location_country_name ?? ''),
+          $this->t('Region')->render()          => ($hit_details->location_region ?? ''),
+          $this->t('City')->render()            => ($hit_details->location_city ?? ''),
+          $this->t('Postal Code')->render()     => ($hit_details->location_postal ?? ''),
+          $this->t('Latitude')->render()        => ($hit_details->location_latitude ?? ''),
+          $this->t('Longitude')->render()       => ($hit_details->location_longitude ?? ''),
+          $this->t('PSTN Area Code')->render()  => ($hit_details->location_area_code ?? ''),
         ];
         $array = array_merge($array, $geoip_data_array);
       }
@@ -749,7 +766,7 @@ class ReportService implements VisitorsReportInterface {
       );
 
     $query->fields('u', ['name', 'uid']);
-    $db_or = new Condition('or');
+    $db_or = Database::getConnection()->condition('or');
     $db_or->condition('v.visitors_path', '/node/' . $nid, '=');
     // @todo removed placeholder is this right?
     $db_or->condition(

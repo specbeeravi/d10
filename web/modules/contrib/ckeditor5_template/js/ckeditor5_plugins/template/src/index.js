@@ -1,6 +1,6 @@
-import Template from './template/template';
+import Template from './template';
 
 
 export default {
-  Template
+    Template
 };

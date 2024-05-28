@@ -13,11 +13,11 @@
         </a>
     {% endif %}
 
-    {# Twitter share button #}
-    {% if items.services.twitter %}
-        <a href="https://twitter.com/intent/tweet?text={{ items.title }}+{{ items.page_url }}" target="_blank" title="{{ 'Share to'|t }} Twitter" aria-label="{{ 'Share to'|t }} Twitter" class="social-sharing-buttons__button share-twitter" rel="noopener">
+    {# X share button #}
+    {% if items.services.x %}
+        <a href="https://twitter.com/intent/tweet?text={{ items.title }}+{{ items.page_url }}" target="_blank" title="{{ 'Share to'|t }} X" aria-label="{{ 'Share to'|t }} X" class="social-sharing-buttons__button share-x" rel="noopener">
             <svg width="{{ items.width }}" height="{{ items.width }}" style="border-radius:{{ items.radius }};">
-                <use href="{{ social_buttons_sprite }}#twitter" />
+                <use href="{{ social_buttons_sprite }}#x" />
             </svg>
         </a>
     {% endif %}
@@ -63,15 +63,6 @@
         <a href="https://www.xing.com/spi/shares/new?url={{ items.page_url }}" target="_blank" title="{{ 'Share to'|t }} Xing" aria-label="{{ 'Share to'|t }} Xing" class="social-sharing-buttons__button share-xing" rel="noopener">
             <svg width="{{ items.width }}" height="{{ items.width }}" style="border-radius:{{ items.radius }};">
                 <use href="{{ social_buttons_sprite }}#xing" />
-            </svg>
-        </a>
-    {% endif %}
-
-    {# Digg share button #}
-    {% if items.services.digg %}
-        <a href="https://www.digg.com/submit?phase=2&amp;url={{ items.page_url }}&amp;title={{ items.title }}" target="_blank" title="{{ 'Share to'|t }} Digg" aria-label="{{ 'Share to'|t }} Digg" class="social-sharing-buttons__button share-digg" rel="noopener">
-            <svg width="{{ items.width }}" height="{{ items.width }}" style="border-radius:{{ items.radius }};">
-                <use href="{{ social_buttons_sprite }}#digg" />
             </svg>
         </a>
     {% endif %}

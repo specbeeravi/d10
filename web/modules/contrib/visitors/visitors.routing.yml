@@ -6,6 +6,22 @@ visitors.settings:
   requirements:
     _permission: 'administer site configuration'
 
+visitors.rebuild.route:
+  path: '/admin/config/system/visitors/rebuild-route'
+  defaults:
+    _form: '\Drupal\visitors\Form\RebuildRouteForm'
+    _title: 'Rebuild Routes'
+  requirements:
+    _permission: 'administer site configuration'
+
+visitors.rebuild.ip_address:
+  path: '/admin/config/system/visitors/rebuild-ip-address'
+  defaults:
+    _form: '\Drupal\visitors\Form\RebuildIpAddressForm'
+    _title: 'Rebuild IP Addresses'
+  requirements:
+    _permission: 'administer site configuration'
+
 visitors.track:
   path: '/visitors/_track'
   defaults:

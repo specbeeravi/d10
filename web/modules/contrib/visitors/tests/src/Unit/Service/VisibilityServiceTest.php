@@ -7,12 +7,12 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\Path\PathMatcher;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\path_alias\AliasManagerInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\user\UserDataInterface;
 use Drupal\visitors\Service\VisibilityService;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\Core\Session\AccountProxyInterface;
 
 /**
  * Tests the VisibilityService class.
@@ -122,12 +122,12 @@ class VisibilityServiceTest extends UnitTestCase {
     $config = $this->createMock('\Drupal\Core\Config\ImmutableConfig');
     $config->expects($this->any())
       ->method('get')
-      ->withConsecutive(
-        ['visibility.exclude_user1'],
-        ['visibility.user_role_mode'],
-        ['visibility.user_role_roles'],
-        ['visibility.user_account_mode'])
-      ->willReturnOnConsecutiveCalls(TRUE, $visibilityConfig, $accountRoles, '');
+      ->willReturnMap([
+        ['visibility.exclude_user1', TRUE],
+        ['visibility.user_role_mode', $visibilityConfig],
+        ['visibility.user_role_roles', $accountRoles],
+        ['visibility.user_account_mode', ''],
+      ]);
 
     $this->configFactory->expects($this->once())
       ->method('get')
@@ -229,8 +229,10 @@ class VisibilityServiceTest extends UnitTestCase {
     $config = $this->createMock('\Drupal\Core\Config\ImmutableConfig');
     $config->expects($this->any())
       ->method('get')
-      ->withConsecutive(['visibility.request_path_mode'], ['visibility.request_path_pages'])
-      ->willReturnOnConsecutiveCalls($visibilityConfig, '');
+      ->willReturnMap([
+        ['visibility.request_path_mode', $visibilityConfig],
+        ['visibility.request_path_pages', ''],
+      ]);
 
     $this->configFactory->expects($this->once())
       ->method('get')

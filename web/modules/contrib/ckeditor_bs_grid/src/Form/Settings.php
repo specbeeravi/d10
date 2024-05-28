@@ -76,6 +76,11 @@ class Settings extends ConfigFormBase {
 
     $form['#tree'] = TRUE;
 
+    $defaultLayoutOptions = [
+      'none' => $this->t('None'),
+      'order' => $this->t('By Sort Order'),
+    ];
+
     $group_class = 'group-order-weight';
     foreach ($breakpoints as $break => $data) {
 
@@ -113,18 +118,33 @@ class Settings extends ConfigFormBase {
 
       // For now this is static to 12.
       foreach ($cols as $col) {
+        $default_layout = 'none';
+        if (!empty($config[$break]['columns'][$col]['default_layout'])) {
+          $default_layout = $config[$break]['columns'][$col]['default_layout'];
+        }
         $form[$break]['columns'][$col] = [
-          '#title' => $this->t('@num Column Layout', ['@num' => $col]),
+          '#title' => $this->t('@num Column Layout (default: @default)', [
+            '@num' => $col,
+            '@default' => $defaultLayoutOptions[$default_layout],
+          ]),
           '#type' => 'details',
           '#prefix' => '<div id="fieldset-wrapper-' . $break . '-' . $col . '">',
           '#suffix' => '</div>',
           '#open' => FALSE,
         ];
 
+        $form[$break]['columns'][$col]['default_layout'] = [
+          '#title' => $this->t('Default Layout Selection'),
+          '#description' => $this->t('Select "By Sort Order" to make the top option the default for this layout.'),
+          '#type' => 'select',
+          '#options' => $defaultLayoutOptions,
+          '#default_value' => $default_layout,
+        ];
+
         // Build table.
         $form[$break]['columns'][$col]['layouts'] = [
           '#type' => 'table',
-          '#caption' => $this->t('Items'),
+          '#caption' => $this->t('Available Layouts:'),
           '#header' => [
             $this->t('Label'),
             $this->t('Settings'),

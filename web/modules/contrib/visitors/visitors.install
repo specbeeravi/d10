@@ -7,6 +7,8 @@
 
 use Drupal\block\Entity\Block;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Url;
 
 /**
  * Implements hook_schema().
@@ -58,11 +60,168 @@ function visitors_schema() {
         'type' => 'text',
         'not null' => TRUE,
       ],
+      'route' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'config_resolution' => [
+        'type' => 'varchar',
+        'length' => 18,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_pdf' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_flash' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_java' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_quicktime' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_realplayer' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_windowsmedia' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_silverlight' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'config_cookie' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
     ],
     'primary key' => ['visitors_id'],
   ];
 
+  $schema['visitors_counter'] = [
+    'fields' => [
+      'entity_id' => [
+        'description' => 'The entity id for these visits.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'entity_type' => [
+        'type' => 'varchar_ascii',
+        'not null' => TRUE,
+        'default' => 'node',
+        'length' => EntityTypeInterface::ID_MAX_LENGTH,
+        'description' => 'The entity_type of the entity for these visits.',
+      ],
+      'total' => [
+        'description' => 'The total number of times the entity has been viewed.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'big',
+      ],
+      'today' => [
+        'description' => 'The total number of times the entity has been viewed today.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'medium',
+      ],
+      'timestamp' => [
+        'description' => 'The most recent time the entity has been viewed.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['entity_type', 'entity_id'],
+  ];
+
   return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function visitors_requirements($phase) {
+  $requirements = [];
+  if ($phase == 'runtime') {
+    $requirements['visitors']['title'] = t('Visitors');
+    $requirements['visitors']['severity'] = REQUIREMENT_OK;
+    $requirements['visitors']['value'] = t('Enabled');
+    $requirements['visitors']['description'] = ['#markup' => ''];
+    $rebuild_ip_address = \Drupal::state()
+      ->get('visitors.rebuild.ip_address', FALSE);
+    if ($rebuild_ip_address) {
+      $requirements['visitors']['severity'] = REQUIREMENT_WARNING;
+      $url_ip_form = Url::fromUri('internal:/admin/config/system/visitors/rebuild-ip-address', [
+        'query' => [
+          'destination' => Url::fromUri('internal:/admin/reports/status')->toString(),
+        ],
+      ]);
+      $requirements['visitors']['description']['#markup'] .= t('IP addresses need to be <a href="@rebuild-form">converted</a> to the new format, that support IPv6.', [
+        '@rebuild-form' => $url_ip_form->toString(),
+      ]);
+    }
+    // @todo Check if routes need rebuilding after the route report is released.
+    // @see https://www.drupal.org/project/visitors/issues/3376234
+    $rebuild_route = FALSE;
+    if ($rebuild_route) {
+      $requirements['visitors']['severity'] = REQUIREMENT_WARNING;
+      $url_route_form = Url::fromUri('internal:/admin/config/system/visitors/rebuild-route', [
+        'query' => [
+          'destination' => Url::fromUri('internal:/admin/reports/status')->toString(),
+        ],
+      ]);
+      if ($rebuild_ip_address) {
+        $requirements['visitors']['description']['#markup'] .= '<br/>';
+      }
+      $requirements['visitors']['description']['#markup'] .= t('Some routes are missing from the visitors log, <a href="@rebuild-form">add missing routes</a>.', [
+        '@rebuild-form' => $url_route_form->toString(),
+      ]);
+    }
+
+    $properties = $rebuild_ip_address + $rebuild_route;
+    if ($properties) {
+      $requirements['visitors']['value'] = \Drupal::translation()->formatPlural(
+        $properties,
+        '@count property needs rebuilding',
+        '@count properties need rebuilding'
+      );
+    }
+
+  }
+  return $requirements;
 }
 
 /**
@@ -142,7 +301,7 @@ function visitors_update_8214(&$sandbox) {
   // Retrieves a \Drupal\Core\Database\Connection which is a PDO instance.
   $database = Database::getConnection();
 
-  if (!isset($sandbox['progress'])) {
+  try {
     $database->schema()
       ->changeField('visitors', 'visitors_ip', 'visitors_ip', [
         'type' => 'varchar',
@@ -150,51 +309,11 @@ function visitors_update_8214(&$sandbox) {
         'not null' => TRUE,
         'default' => '',
       ]);
-
-    $sandbox['progress'] = 0;
-    $sandbox['last_id'] = 0;
-    $sandbox['max'] = $database->select('visitors', 'v')
-      ->countQuery()
-      ->execute()
-      ->fetchField();
+    \Drupal::state()->set('visitors.rebuild.ip_address', TRUE);
   }
-
-  $logs = $database->select('visitors', 'v')
-    ->fields('v', [
-      'visitors_id',
-      'visitors_ip',
-    ])
-    ->condition('visitors_id', $sandbox['last_id'], '>')
-    ->range(0, 75)
-    ->orderBy('visitors_id', 'ASC')
-    ->execute();
-
-  foreach ($logs as $log) {
-    $sandbox['progress'] += 1;
-    $sandbox['last_id'] = $log->visitors_id;
-
-    $visitors_ip = intval($log->visitors_ip);
-    if (FALSE == $visitors_ip) {
-      continue;
-    }
-    $ip_address = long2ip($visitors_ip);
-    if ($ip_address === FALSE) {
-      continue;
-    }
-    try {
-      $database->update('visitors')
-        ->fields([
-          'visitors_ip' => $ip_address,
-        ])
-        ->condition('visitors_id', $log->visitors_id)
-        ->execute();
-    }
-    catch (\Exception $e) {
-      watchdog_exception('visitors', $e);
-    }
-
+  catch (\Exception $e) {
+    watchdog_exception('visitors', $e);
   }
-  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
 }
 
 /**
@@ -220,10 +339,10 @@ function visitors_update_8215(&$sandbox) {
       $settings->set('visibility.exclude_user1', TRUE);
     }
 
-    $settings->delete('exclude_user1');
-    $settings->delete('excluded_pages');
-    $settings->delete('excluded_roles');
-    $settings->delete('negate_pages');
+    $settings->clear('exclude_user1');
+    $settings->clear('excluded_pages');
+    $settings->clear('excluded_roles');
+    $settings->clear('negate_pages');
 
     $settings->set('visibility.request_path_mode', 0);
     $settings->set('visibility.request_path_pages', "/admin\n/admin/*\n/batch\n/node/add*\n/node/*/*\n/user/*/*");
@@ -314,4 +433,361 @@ function visitors_update_8215(&$sandbox) {
 
   $sandbox['progress'] += 1;
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
+}
+
+/**
+ * Entity View counter.
+ */
+function visitors_update_8216(&$sandbox) {
+
+  $database = \Drupal::database();
+  $time = \Drupal::time();
+  $logger = \Drupal::logger('visitors');
+  $sandbox['#finished'] = 0;
+  if (!isset($sandbox['progress'])) {
+    drupal_flush_all_caches();
+    $sandbox['progress'] = -15;
+    \Drupal::service('config.factory')
+      ->getEditable('visitors.config')
+      ->set('counter.enabled', 1)
+      ->set('counter.entity_types', ['node' => 'node'])
+      ->set('counter.display_max_age', 3600)
+      ->save();
+  }
+  elseif ($sandbox['progress'] == -15) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'route',
+        [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    \Drupal::state()->set('visitors.rebuild.route', TRUE);
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -14) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_resolution',
+        [
+          'type' => 'varchar',
+          'length' => 18,
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -13) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_pdf',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -12) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_flash',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -11) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_java',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -10) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_quicktime',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -9) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_realplayer',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -8) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_windowsmedia',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -7) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_silverlight',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -6) {
+    $schema = $database->schema();
+    try {
+      $schema->addField(
+        'visitors',
+        'config_cookie',
+        [
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => FALSE,
+          'default' => NULL,
+        ]
+      );
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+
+  elseif ($sandbox['progress'] == -5) {
+    $schema = $database->schema();
+    $table_name = 'visitors_counter';
+    $table_schema = [
+      'fields' => [
+        'entity_id' => [
+          'description' => 'The entity id for these visits.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ],
+        'entity_type' => [
+          'type' => 'varchar_ascii',
+          'not null' => TRUE,
+          'default' => 'node',
+          'length' => EntityTypeInterface::ID_MAX_LENGTH,
+          'description' => 'The entity_type of the entity for these visits.',
+        ],
+        'total' => [
+          'description' => 'The total number of times the entity has been viewed.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'big',
+        ],
+        'today' => [
+          'description' => 'The total number of times the entity has been viewed today.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'size' => 'medium',
+        ],
+        'timestamp' => [
+          'description' => 'The most recent time the entity has been viewed.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['entity_type', 'entity_id'],
+    ];
+    try {
+      $schema->createTable($table_name, $table_schema);
+    }
+    catch (\Exception $e) {
+      watchdog_exception('visitors', $e);
+    }
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -4) {
+    // Wait to ensure the route column is there. This is a hack.
+    sleep(10);
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -3) {
+    $database->update('visitors')
+      ->fields([
+        'route' => 'entity.node.canonical',
+      ])
+      ->condition('visitors_path', '/node/%', 'LIKE')
+      ->condition('visitors_path', '/node/%/%', 'NOT LIKE')
+      ->condition('visitors_path', '/node/add', '<>')
+      ->execute();
+
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -2) {
+    $database->update('visitors')
+      ->fields([
+        'route' => 'entity.node.preview',
+      ])
+      ->condition('visitors_path', '/node/preview/%/%', 'LIKE')
+      ->execute();
+
+    $sandbox['progress'] += 1;
+  }
+  elseif ($sandbox['progress'] == -1) {
+    $query = $database->select('visitors', 'v')
+      ->fields('v', ['visitors_path'])
+      ->condition('route', 'entity.node.canonical')
+      ->groupBy('visitors_path');
+    $query->addExpression('COUNT(visitors_path)', 'count');
+    $query->addExpression('MAX(visitors_date_time)', 'timestamp');
+    $sandbox['paths'] = $query->execute()->fetchAll();
+
+    $sandbox['max'] = count($sandbox['paths']);
+    $sandbox['progress'] += 1;
+  }
+  else {
+    $execution_time = 0;
+    $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+    do {
+      $record = array_pop($sandbox['paths']);
+      $sandbox['progress'] += 1;
+
+      if (empty($record)) {
+        $logger->error(var_export($record, TRUE));
+        $execution_time = $time->getCurrentTime() - $time->getRequestTime();
+        if ($execution_time > 30) {
+          $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
+          break;
+        }
+        continue;
+      }
+      $path = $record->visitors_path;
+      [$type, $id] = array_slice(explode('/', $path), 1);
+      if (is_null($id)) {
+        \Drupal::logger('visitors')->error('Invalid path: @path', [
+          '@path' => $path,
+        ]);
+        continue;
+      }
+      if (!$node_storage->load($id)) {
+        continue;
+      }
+      $count = $record->count;
+      $timestamp = $record->timestamp;
+      $database
+        ->merge('visitors_counter')
+        ->key('entity_type', $type)
+        ->key('entity_id', $id)
+        ->fields([
+          'today' => 0,
+          'total' => $count,
+          'timestamp' => $timestamp,
+        ])
+        ->expression('today', '[today]')
+        ->expression('total', "[total] + $count")
+        ->execute();
+
+      $execution_time = $time->getCurrentTime() - $time->getRequestTime();
+
+    } while ($execution_time < 30);
+
+    $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
+    if (empty($sandbox['paths'])) {
+      $sandbox['#finished'] = 1;
+    }
+  }
+
 }

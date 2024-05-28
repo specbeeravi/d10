@@ -20,7 +20,7 @@ interface VisitorsReportInterface {
   /**
    * Get the number of hits for each day of the month.
    *
-   * @param array|null $header
+   * @param array $header
    *   Table header configuration.
    *
    * @return array
@@ -39,7 +39,7 @@ interface VisitorsReportInterface {
   /**
    * Get the number of hits for each host (ip address).
    *
-   * @param array|null $header
+   * @param array $header
    *   Table header configuration.
    *
    * @return array
@@ -50,13 +50,13 @@ interface VisitorsReportInterface {
   /**
    * Get the number of hits for each hour of the day.
    *
-   * @param array $header
+   * @param mixed $header
    *   Table header configuration.
    *
    * @return array
    *   The number of hits for each hour of the day.
    */
-  public function hours(array $header = NULL);
+  public function hours($header = NULL);
 
   /**
    * Get the number of hits for each month of the year.

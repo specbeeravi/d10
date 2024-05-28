@@ -12,9 +12,9 @@ better_social_sharing_buttons.settings:
         facebook:
           type: string
           label: 'Facebook'
-        twitter:
+        x:
           type: string
-          label: 'Twitter'
+          label: 'x'
         whatsapp:
           type: string
           label: 'WhatsApp'
@@ -33,9 +33,6 @@ better_social_sharing_buttons.settings:
         xing:
           type: string
           label: 'Xing'
-        digg:
-          type: string
-          label: 'Digg'
         tumblr:
           type: string
           label: 'Tumblr'
@@ -81,9 +78,9 @@ block.settings.social_sharing_buttons_block:
         facebook:
           type: string
           label: 'Facebook'
-        twitter:
+        x:
           type: string
-          label: 'Twitter'
+          label: 'x'
         whatsapp:
           type: string
           label: 'WhatsApp'
@@ -102,9 +99,6 @@ block.settings.social_sharing_buttons_block:
         xing:
           type: string
           label: 'xing'
-        digg:
-          type: string
-          label: 'Digg'
         tumblr:
           type: string
           label: 'Tumblr'

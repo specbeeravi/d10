@@ -9,7 +9,7 @@ dependencies:
 - tome:tome_static
 - quant:quant_api
 
-# Information added by Drupal.org packaging script on 2023-07-31
-version: '1.5.2'
+# Information added by Drupal.org packaging script on 2024-03-01
+version: '1.6.1'
 project: 'quantcdn'
-datestamp: 1690765541
+datestamp: 1709276640

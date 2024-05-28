@@ -29,4 +29,5 @@ ckeditor_bs_grid_grid:
     # If the plugin does not provide elements, set this as
     # `elements: false`
     elements:
+      - <div>
       - <div class data-*>

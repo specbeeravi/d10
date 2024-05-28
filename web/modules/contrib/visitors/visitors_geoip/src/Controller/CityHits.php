@@ -4,9 +4,9 @@ namespace Drupal\visitors_geoip\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\visitors_geoip\VisitorsGeoIpReportInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\StringTranslation\TranslationInterface;
 
 /**
  * City Hit Report controller.

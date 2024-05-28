@@ -15,6 +15,24 @@ function visitors_geoip_requirements($phase) {
   $requirements = [];
 
   switch ($phase) {
+    case 'install':
+      $geoip2_installed = class_exists('GeoIp2\Database\Reader');
+      if (!$geoip2_installed) {
+        $requirements['visitors_geoip'] = [
+          'title' => t('Visitors GeoIP'),
+          'value' => t('Missing dependency.'),
+          'description' => t(
+            'The @module module requires the @geoip2 package. Install visitors using composer.',
+            [
+              '@module' => 'visitors_geoip',
+              '@geoip2' => 'geoip2/geoip2',
+            ]
+          ),
+          'severity' => REQUIREMENT_ERROR,
+        ];
+      }
+      break;
+
     case 'runtime':
       $service = \Drupal::service('visitors_geoip.lookup');
       $meta = $service->metadata();

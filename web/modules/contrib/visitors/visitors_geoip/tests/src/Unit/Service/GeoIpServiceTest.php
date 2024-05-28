@@ -3,8 +3,8 @@
 namespace Drupal\Tests\visitors_geoip\Unit\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\visitors_geoip\Service\GeoIpService;
 use Drupal\Tests\UnitTestCase;
+use Drupal\visitors_geoip\Service\GeoIpService;
 use GeoIp2\Database\Reader;
 use GeoIp2\Model\City;
 
@@ -35,6 +35,13 @@ class GeoIpServiceTest extends UnitTestCase {
    * @var \Drupal\visitors_geoip\Service\GeoIpService
    */
   protected $geoIpService;
+
+  /**
+   * The settings config object.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $settings;
 
   /**
    * {@inheritdoc}

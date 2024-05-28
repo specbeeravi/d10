@@ -5,9 +5,9 @@ namespace Drupal\visitors\Controller\Report;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBuilderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\visitors\VisitorsReportInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\visitors\VisitorsReportInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Top Page Report Controller.

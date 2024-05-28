@@ -1,5 +1,0 @@
-dxpr_theme_helper.icons:
-  version: VERSION
-  css:
-    theme:
-      css/dxpr_theme_helper.icons.css: {}

@@ -46,6 +46,13 @@ class DaysOfMonthTest extends UnitTestCase {
   protected $controller;
 
   /**
+   * The mocked string translation service.
+   *
+   * @var \Drupal\Core\StringTranslation\TranslationInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $stringTranslation;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
@@ -54,13 +61,13 @@ class DaysOfMonthTest extends UnitTestCase {
     $this->dateFormatter = $this->createMock(DateFormatterInterface::class);
     $this->formBuilder = $this->createMock(FormBuilderInterface::class);
     $this->report = $this->createMock(VisitorsReportInterface::class);
-    $this->string_translation = $this->createMock(TranslationInterface::class);
+    $this->stringTranslation = $this->createMock(TranslationInterface::class);
 
     $this->controller = new DaysOfMonth(
       $this->dateFormatter,
       $this->formBuilder,
       $this->report,
-      $this->string_translation
+      $this->stringTranslation
     );
 
     if (!defined('RESPONSIVE_PRIORITY_LOW')) {

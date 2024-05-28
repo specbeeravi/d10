@@ -60,7 +60,22 @@ visitors.config:
         userid:
           type: boolean
           label: 'Track User ID'
-
+    counter:
+      type: mapping
+      label: 'Links and downloads'
+      mapping:
+        enabled:
+          type: boolean
+          label: 'Count entity views'
+        entity_types:
+          type: sequence
+          label: 'Entity types'
+          sequence:
+            type: string
+            label: 'Entity type'
+        display_max_age:
+          type: integer
+          label: 'How long any views may be cached, i.e. the refresh interval'
     codesnippet:
       type: mapping
       label: 'Custom code snippets'

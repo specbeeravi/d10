@@ -40,7 +40,8 @@ getDirectories('./js/ckeditor5_plugins').forEach((dir) => {
       ),
     },
     output: {
-      path: path.resolve(__dirname, './js/build'),
+      //path: path.resolve(__dirname, './js/build'),
+      path: path.resolve(__dirname, './js'),
       filename: `${dir}.js`,
       library: ['CKEditor5', dir],
       libraryTarget: 'umd',

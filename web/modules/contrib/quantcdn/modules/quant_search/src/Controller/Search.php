@@ -5,9 +5,9 @@ namespace Drupal\quant_search\Controller;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\quant\Seed;
+use Drupal\quant\Utility;
 use Drupal\quant_api\Client\QuantClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,6 +19,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Search extends ControllerBase {
 
   const SETTINGS = 'quant_api.settings';
+
+  /**
+   * The Quant API client.
+   *
+   * @var \Drupal\quant_api\Client\QuantClientInterface
+   */
+  protected $client;
 
   /**
    * Build the form.
@@ -248,20 +255,18 @@ class Search extends ControllerBase {
       $record['image'] = Seed::rewriteRelative($record['image']);
     }
 
-    $options = ['absolute' => FALSE];
     if (!empty($langcode)) {
       $language = \Drupal::languageManager()->getLanguage($langcode);
-      $options['language'] = $language;
       $record['lang_code'] = $langcode;
 
       foreach ($entity->getTranslationLanguages() as $code => $lang) {
         $language_label = \Drupal::service('string_translation')->translate($language->getName(), [], ['langcode' => $code]);
-        $record["language_${code}"] = $language_label;
+        $record["language_{$code}"] = $language_label;
       }
     }
 
     // @todo Update node-only logic.
-    $record['url'] = Url::fromRoute('entity.node.canonical', ['node' => $entity->id()], $options)->toString();
+    $record['url'] = Utility::getCanonicalUrl('node', $entity->id(), $langcode);
 
     // Add search meta for node entities.
     if ($entity->getEntityTypeId() == 'node') {

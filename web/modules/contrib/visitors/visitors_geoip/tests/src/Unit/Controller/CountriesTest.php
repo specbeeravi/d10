@@ -3,10 +3,10 @@
 namespace Drupal\Tests\visitors_geoip\Unit\Controller;
 
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Tests\UnitTestCase;
 use Drupal\visitors_geoip\Controller\Countries;
 use Drupal\visitors_geoip\VisitorsGeoIpReportInterface;
-use Drupal\Tests\UnitTestCase;
-use Drupal\Core\StringTranslation\TranslationInterface;
 
 /**
  * Tests the Countries controller.
@@ -72,7 +72,6 @@ class CountriesTest extends UnitTestCase {
     $this->controller = NULL;
     $this->report = NULL;
     $this->formBuilder = NULL;
-    $this->dateFormatter = NULL;
     $this->stringTranslation = NULL;
 
     parent::tearDown();

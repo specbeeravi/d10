@@ -4,6 +4,7 @@ ckeditor5_template_template:
       - template.Template
   drupal:
     label: Template
+    class: \Drupal\ckeditor5_template\Plugin\CKEditor5Plugin\Template
     library: ckeditor5_template/template
     admin_library: ckeditor5_template/admin
     toolbar_items:

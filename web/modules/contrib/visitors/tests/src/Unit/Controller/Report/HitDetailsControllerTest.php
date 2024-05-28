@@ -3,9 +3,9 @@
 namespace Drupal\Tests\visitors\Unit\Controller\Report;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Tests\UnitTestCase;
 use Drupal\visitors\Controller\Report\HitDetails;
 use Drupal\visitors\VisitorsReportInterface;
-use Drupal\Tests\UnitTestCase;
 
 /**
  * Unit tests for the HitDetails controller.
