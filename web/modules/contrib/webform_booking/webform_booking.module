@@ -1,0 +1,146 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\webform\WebformInterface;
+use Drupal\webform\Entity\Webform;
+
+/**
+ * Implements hook_form_alter().
+ */
+function webform_booking_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (strpos($form_id, 'webform_submission_') === 0) {
+    $webform_id = explode('_', $form_id)[2];
+    $webform = Webform::load($webform_id);
+
+    if ($webform && webform_booking_has_payment_enabled($webform)) {
+      // Add hidden transaction field
+      $form['elements']['paypal_transaction'] = [
+        '#type' => 'hidden',
+        '#title' => 'PayPal Transaction',
+        '#name' => 'paypal_transaction',
+        '#webform_key' => 'paypal_transaction',
+      ];
+
+      // Attach the field to the webform programmatically
+      $webform->setElementProperties('paypal_transaction', $form['elements']['paypal_transaction']);
+      $webform->save();
+
+      // Add custom submit handler
+      $form['#submit'][] = 'webform_booking_submission_presave';
+    }
+  }
+}
+
+/**
+ * Custom submit handler for webform submissions.
+ */
+function webform_booking_submission_presave($form, FormStateInterface $form_state) {
+  $transaction_data = $form_state->getValue('paypal_transaction');
+  if (!empty($transaction_data)) {
+    // The webform submission will automatically include the paypal_transaction data
+    // because we've added it to the webform structure.
+    // No need to manually set the data here.
+  }
+}
+
+/**
+ * Helper function to check if any booking element has payment enabled.
+ */
+function webform_booking_has_payment_enabled(WebformInterface $webform) {
+  $elements = $webform->getElementsDecodedAndFlattened();
+  foreach ($elements as $element) {
+    if (isset($element['#type']) && $element['#type'] === 'webform_booking' && !empty($element['#paypal_enabled'])) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for webform_booking_paypal_transaction theme hook.
+ */
+function webform_booking_preprocess(&$variables) {
+  if (isset($variables["element"]["#webform_plugin_id"]) && $variables["element"]["#webform_plugin_id"] === 'webform_booking' && isset($variables["item"]["value"]["#plain_text"])) {
+    $slot_data = explode('|', $variables["item"]["value"]["#plain_text"]);
+    unset($variables["item"]["value"]["#plain_text"]);
+    $slot_start_time = $slot_data[0];
+    $slot_quantity = $slot_data[1];
+    $slot_start_time = new \DateTime($slot_start_time);
+    $slot_end_time = clone $slot_start_time;
+    $slot_duration = isset($variables["element"]["#slot_duration"]) ? $variables["element"]["#slot_duration"] : 60; // Default to 60 minutes
+    $slot_end_time->modify('+' . $slot_duration . ' minutes');
+
+    $slot_end_time = $slot_end_time->format('H:i');
+    $variables["item"]["value"]['#markup'] = '<strong>Day:</strong> ' . $slot_start_time->format('Y-m-d') . '<br><strong>Slot:</strong> ' . $slot_start_time->format('H:i') . ' to ' . $slot_end_time . '<br><strong>Quantity:</strong> ' . $slot_quantity;
+  }
+  if (isset($variables["element"]["#name"]) && $variables['element']['#name'] === 'paypal_transaction') {
+    if (isset($variables["value"]["#plain_text"])) {
+      $transaction_data = json_decode($variables["value"]["#plain_text"], TRUE);
+      unset($variables["item"]["value"]["#plain_text"]);
+      $variables["item"]["value"]['#markup'] = '<div class="paypal-transaction-details">';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Transaction ID:</strong> ' . htmlspecialchars($transaction_data['id']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Status:</strong> ' . htmlspecialchars($transaction_data['status']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Amount:</strong> ' . htmlspecialchars($transaction_data['purchase_units'][0]['amount']['value'] . ' ' . $transaction_data['purchase_units'][0]['amount']['currency_code']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Payer Name:</strong> ' . htmlspecialchars($transaction_data['payer']['name']['given_name'] . ' ' . $transaction_data['payer']['name']['surname']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Payer Email:</strong> ' . htmlspecialchars($transaction_data['payer']['email_address']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Created At:</strong> ' . htmlspecialchars($transaction_data['create_time']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '<p><strong>Updated At:</strong> ' . htmlspecialchars($transaction_data['update_time']) . '</p>';
+      $variables["item"]["value"]['#markup'] .= '</div>';
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function webform_booking_theme() {
+  return [
+    'input__webform_booking' => [
+      'render element' => 'element',
+      'template' => 'input--webform-booking',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for input__webform_booking.
+ */
+function webform_booking_preprocess_input__webform_booking(&$variables) {
+  // Ensure all element variables are available in the template
+  $variables['element_id'] = $variables['element']['#element_id'] ?? '';
+  $variables['show_input'] = $variables['element']['#show_input'] ?? FALSE;
+  $variables['is_admin'] = $variables['element']['#is_admin'] ?? FALSE;
+  $variables['error_message'] = $variables['element']['#error_message'] ?? '';
+}
+
+/**
+ * Implements hook_token_info_alter().
+ */
+function webform_booking_token_info_alter(&$data) {
+  \Drupal::moduleHandler()->loadInclude('webform_booking', 'inc', 'webform_booking.tokens');
+}
+
+/**
+ * Formats the given date and time object.
+ *
+ * @param \Drupal\Core\Datetime\DrupalDateTime $dt
+ *   The date and time object to format.
+ * @param string $format
+ *   Accepts a built-in format or a format defined in /admin/config/regional/date-time,
+ *   or 'custom' for custom formatting.
+ * @param string $datestring
+ *   If $format is 'custom', this string is used as the format pattern.
+ *
+ * @return string
+ *   The formatted date string.
+ *
+ * @throws \InvalidArgumentException
+ *   Thrown if the provided date object is invalid or if the format is unsupported.
+ */
+function _webform_booking_format_date(\Drupal\Core\Datetime\DrupalDateTime $dt, string $format = 'short', string $datestring = '') {
+  return \Drupal::service('date.formatter')->format(
+    $dt->getTimestamp(),
+    $format,
+    $datestring
+  );
+}

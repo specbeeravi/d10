@@ -1,0 +1,43 @@
+webform_booking.settings:
+  path: '/admin/config/services/webform-booking'
+  defaults:
+    _form: '\Drupal\webform_booking\Form\WebformBookingSettingsForm'
+    _title: 'Webform Booking Settings'
+  requirements:
+    _permission: 'manage webform booking'
+
+webform_booking.get_days:
+  path: '/get-days/{webform_id}/{element_id}/{date}'
+  defaults:
+    _controller: '\Drupal\webform_booking\Controller\WebformBookingController::getAvailableDays'
+    _title: 'Get available days'
+  requirements:
+    _permission: 'access content'
+    webform_id: '[^/]+'
+    element_id: '[^/]+'
+    date: '\d{4}-\d{2}-\d{2}'
+
+webform_booking.get_slots:
+  path: '/get-slots/{webform_id}/{element_id}/{date}'
+  defaults:
+    _controller: '\Drupal\webform_booking\Controller\WebformBookingController::getAvailableSlots'
+    _title: 'Get available slots'
+  requirements:
+    _permission: 'access content'
+    webform_id: '[^/]+'
+    element_id: '[^/]+'
+    date: '\d{4}-\d{2}-\d{2}'
+
+webform_booking.cancel_booking_confirm:
+  path: '/webform_booking/{webform}/submissions/{webform_submission}/cancel_booking'
+  defaults:
+    _title: 'Cancel Booking'
+    _form: 'Drupal\webform_booking\Form\CancelBookingConfirmForm'
+  options:
+    parameters:
+      webform:
+        type: 'entity:webform'
+      webform_submission:
+        type: 'entity:webform_submission'
+  requirements:
+    _custom_access: 'Drupal\webform_booking\Access\CancelBookingAccessCheck::checkCancelBookingAccess'

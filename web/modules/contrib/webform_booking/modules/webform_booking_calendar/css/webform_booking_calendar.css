@@ -1,0 +1,227 @@
+.fc-event-tooltip {
+  position: absolute !important;
+  max-width: 400px !important; /* Increased max width for more content */
+  background: rgba(50, 50, 50, 0.95) !important; /* A slightly darker background */
+  color: #fff !important; /* White text for contrast */
+  border-radius: 8px !important; /* Rounded corners */
+  padding: 10px !important; /* Add some padding inside */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* Soft shadow for a floating effect */
+  font-size: 0.9rem !important; /* Slightly smaller font for readability */
+  z-index: 1000 !important;
+  pointer-events: none !important; /* Prevents interaction with the tooltip */
+  line-height: 1.4 !important; /* Better spacing between lines */
+  word-wrap: break-word !important; /* Ensures long words or URLs break properly */
+  overflow: visible !important; /* Ensures content is not clipped */
+  white-space: normal !important; /* Allows text to wrap to the next line */
+}
+
+/* Add a small arrow to the tooltip */
+.fc-event-tooltip::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-style: solid !important;
+  border-width: 6px !important;
+  border-color: transparent transparent rgba(50, 50, 50, 0.95) transparent !important;
+  top: 100% !important; /* Position the arrow below the tooltip */
+  left: 20px !important; /* Adjust the arrow's horizontal position */
+}
+
+
+
+
+.fc-event-over-50-s-chat-and-paint  { /* Christmas event calendar color */
+	background-color: blue !important;
+  color: white !important;
+}
+
+.fc-event-vintage-christmas-tree-ceramic-p { /* Christmas event calendar color */
+	background-color: red !important;
+  color: white !important;
+}
+
+.fc-event-booking { /* main booking calendar color */
+  background-color: #5F19EB !important;
+  color: white !important;
+}
+
+.fc-event-adults-night { /* Adults night calendar color */
+  background-color: green !important;
+  color: white !important;
+}
+
+.fc-event-pre-school-messy-play { /* Pre-school messy play calendar color */
+  background-color: orange !important;
+  color: white !important;
+}
+
+
+/* General calendar container */
+.fc {
+  font-family: Arial, sans-serif !important;
+  background-color: #f9f9f9 !important;
+  border-radius: 5px !important;
+  padding: 10px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Header toolbar styles */
+.fc-header-toolbar {
+  margin-bottom: 10px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+/* Title styling */
+.fc-toolbar-title {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+  color: #333 !important;
+}
+
+/* Button group styling */
+.fc-button-group .fc-button {
+  background-color: #4CAF50 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 3px !important;
+  padding: 5px 10px !important;
+  font-size: 0.9rem !important;
+  margin: 0 2px !important;
+  transition: background-color 0.3s !important;
+}
+
+.fc-button-group .fc-button:hover {
+  background-color: #45a049 !important;
+}
+
+/* Active button */
+.fc-button-primary.fc-button-active {
+  background-color: #2e7d32 !important;
+  border-color: #2e7d32 !important;
+}
+
+/* Days of the week header */
+.fc-col-header-cell {
+  background-color: #f1f1f1 !important;
+  color: #444 !important;
+  text-align: center !important;
+  font-weight: bold !important;
+  padding: 10px !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+/* Days in the calendar grid */
+.fc-daygrid-day {
+  border: 1px solid #ddd !important;
+  height: 100px !important;
+  vertical-align: top !important;
+  position: relative !important;
+  background-color: #fff !important;
+}
+
+.fc-day-today {
+  background-color: #e3f2fd !important;
+  border-color: #90caf9 !important;
+}
+
+/* Day numbers */
+.fc-daygrid-day-number {
+  font-size: 0.9rem !important;
+  color: #555 !important;
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+}
+
+/* Event styles */
+.fc-event {
+  padding: 3px 5px !important;
+  border-radius: 3px !important;
+  font-size: 0.8rem !important;
+  cursor: pointer !important;
+}
+
+.fc-event:hover {
+  background-color: #388e3c !important;
+}
+
+/* Dot for events */
+.fc-daygrid-event-dot {
+  background-color: #4caf50 !important;
+}
+
+/* Scrollbar (if applicable) */
+.fc-scroller {
+  overflow-y: auto !important;
+}
+
+/* Adjust margins for a cleaner look */
+.fc-daygrid-day-events {
+  margin-top: 15px !important;
+}
+
+/* Adjust spacing and add subtle borders for date rows */
+.fc-daygrid-day {
+  border: 1px solid #ddd !important; /* Light border around each cell */
+  margin-bottom: 5px !important; /* Add spacing between rows */
+  background-color: #fff !important; /* Ensure a clean background for each date */
+}
+
+/* Add hover effect to date cells for interactivity */
+.fc-daygrid-day:hover {
+  background-color: #f5f5f5 !important; /* Slightly darker background on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important; /* Add a subtle shadow */
+}
+
+/* Style the event spacing within each cell */
+.fc-daygrid-event-harness {
+  margin-top: 5px !important; /* Space between events */
+}
+
+/* Style for the "today" date */
+.fc-day-today {
+  border: 2px solid #4CAF50 !important; /* Highlight today with a thicker green border */
+  background-color: #e8f5e9 !important; /* Light green background */
+}
+
+/* Adjust the height of each date cell for better separation */
+.fc-daygrid-day-frame {
+  padding: 6px !important; /* Add padding inside each cell */
+  height: 150px !important; /* Increase height for better readability */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+
+
+
+
+
+
+
+
+/* Ensure events fit within their respective day slots */
+.fc-daygrid-day-events {
+  overflow-y: auto !important; /* Add scrolling if there are too many events */
+}
+
+/* Prevent events from expanding outside the cell */
+.fc-daygrid-day {
+  position: relative !important;
+}
+
+/* Keep event harness within the bounds */
+.fc-daygrid-event-harness {
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Add space between events without overlapping */
+.fc-daygrid-day-events > .fc-daygrid-event-harness {
+  margin-top: 5px !important; /* Space between events */
+}

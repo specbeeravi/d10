@@ -1,0 +1,14 @@
+name: 'Webform Booking Price Element'
+type: module
+description: 'Provides a custom webform element with Title and Price for Webform Booking.'
+package: 'Webform'
+core_version_requirement: ^9 || ^10 || ^11
+dependencies:
+  - webform:webform
+  - webform:webform_ui
+  - webform_booking:webform_booking
+
+# Information added by Drupal.org packaging script on 2025-06-05
+version: '1.1.10'
+project: 'webform_booking'
+datestamp: 1749113332

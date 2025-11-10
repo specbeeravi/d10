@@ -1,0 +1,4 @@
+services:
+  Drupal\webform_booking\Access\CancelBookingAccessCheck:
+    class: Drupal\webform_booking\Access\CancelBookingAccessCheck
+    arguments: ['@request_stack']

@@ -1,0 +1,11 @@
+fullcalendar:
+  css:
+    theme:
+      https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css: {}
+    component:
+      css/webform_booking_calendar.css: {}
+  js:
+    https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js: {}
+    js/webform_booking_calendar.js: {}
+  dependencies:
+    - core/drupal

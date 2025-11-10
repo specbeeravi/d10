@@ -1,0 +1,7 @@
+webform_booking_calendar.data:
+  path: '/webform-booking-calendar-data/{webform_ids}/{element_names}'
+  defaults:
+    _controller: '\Drupal\webform_booking_calendar\Controller\WebformBookingCalendarController::getEvents'
+    _title: 'Webform Booking Calendar Data'
+  requirements:
+    _permission: 'access content'

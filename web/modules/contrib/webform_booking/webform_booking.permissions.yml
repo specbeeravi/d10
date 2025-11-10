@@ -1,0 +1,14 @@
+manage webform booking:
+  title: 'Manage Webform Booking'
+  description: 'Access the Webform Booking configuration page.'
+  restrict access: true
+
+view webform booking input:
+  title: 'View Webform Booking input'
+  description: 'Allows users to view the Webform Booking input field.'
+  restrict access: true
+
+cancel all webform bookings:
+  title: 'Cancel all Webform Booking submissions'
+  description: 'Allows users to cancel all bookings without using a secure token.'
+  restrict access: true

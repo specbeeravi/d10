@@ -1,4 +1,0 @@
-quant_api.settings_form:
-  route_name: quant_api.settings_form
-  title: 'API'
-  base_route: quant.config

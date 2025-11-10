@@ -1,0 +1,10 @@
+{
+  "name": "drupal/webform_booking_calendar",
+  "description": "A calendar display for webform bookings.",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "drupal/core": "^9 || ^10 || ^11",
+    "drupal/webform": "^6.0"
+  }
+}

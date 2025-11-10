@@ -1,0 +1,31 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a webform booking price element.
+ *
+ * Available variables:
+ * - element: The element.
+ * - attributes: HTML attributes for the containing element.
+ * - title: The title of the element.
+ * - price: The price of the element.
+ * - currency: The currency code.
+ * - currency_symbol: The currency symbol.
+ * - quantity_label: The label for the quantity input.
+ */
+#}
+<div{{ attributes.addClass('webform-booking-price-element').setAttribute('id', 'webform-booking-price-element-' ~ element['#id']) }}>
+  <div class="webform-booking-price-element__price-wrapper">
+    <span class="webform-booking-price-element__price" data-price="{{ element['#price'] }}">
+      {{ element['#currency_symbol'] }}{{ element['#price']|number_format(2, '.', ',') }}
+    </span>
+    <div class="inputWrapper">
+    {% if element['#quantity_label'] %}
+      <label for="{{ element['#id'] }}" class="webform-booking-price-element__quantity-label">{{ element['#quantity_label'] }}</label>
+    {% endif %}
+      <input type="number" id="{{ element['#id'] }}" name="{{ element['#name'] }}" class="webform-booking-price-element__quantity" value="{{ element['#default_value'] }}" min="0" step="1">
+    </div>
+  </div>
+  <div id="price-display-{{ element['#id'] }}" class="webform-booking-price-display" data-price="0.00">
+    Subtotal: {{ element['#currency_symbol'] }}0.00
+  </div>
+</div>

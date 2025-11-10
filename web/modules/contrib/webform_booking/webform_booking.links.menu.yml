@@ -1,0 +1,6 @@
+webform_booking.settings:
+  title: 'Webform Booking'
+  description: 'Configure Webform Booking settings.'
+  parent: system.admin_config_services
+  route_name: webform_booking.settings
+  weight: 100

@@ -1,0 +1,9 @@
+webform_booking_price_element:
+  version: 1.x
+  js:
+    js/webform_booking_price_element.js: {}
+  css:
+    theme:
+      css/webform_booking_price_element.css: {}
+  dependencies:
+    - core/drupal

@@ -1,0 +1,16 @@
+name: 'Webform Booking Calendar'
+type: module
+description: 'Displays Webform booking data in a calendar view using FullCalendar.'
+package: Webform (Experimental)
+core_version_requirement: ^10 || ^11
+# project: webform_booking_calendar
+# version: 1.0.1
+lifecycle: experimental
+dependencies:
+  - drupal:webform
+  - drupal:webform_booking
+
+# Information added by Drupal.org packaging script on 2025-06-05
+version: '1.1.10'
+project: 'webform_booking'
+datestamp: 1749113332

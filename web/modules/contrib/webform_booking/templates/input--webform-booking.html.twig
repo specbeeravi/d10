@@ -1,0 +1,33 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a webform booking input.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the input element.
+ * - children: Optional additional rendered elements.
+ * - element: The complete element array.
+ *   - element_id: The element ID.
+ */
+#}
+{% set element_id = element['#name'] %}
+{% if element.error_message %}
+  <div class="webform-booking-error messages messages--error">
+    {{ element.error_message }}
+  </div>
+{% endif %}
+  <input{{ attributes.setAttribute('id', 'selected-slot-' ~ element_id)
+      .setAttribute('name', element_id ~ '[slot]')
+      .setAttribute('type', 'text') }} />
+<div id="appointment-wrapper-{{ element_id }}">
+
+  <div id="calendar-container-{{ element_id }}"></div>
+  <div id="slots-container-{{ element_id }}"></div>
+  <div id="seats-dropdown-container-{{ element_id }}"></div>
+  <div id="price-display-{{ element_id }}"></div>
+</div>
+
+{# Hidden input for seats #}
+<input type="hidden" id="seats-{{ element_id }}" name="{{ element_id }}[seats]" value="1" />
+
+{{ children }}

@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Contains webform_booking_price_element.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function webform_booking_price_element_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.webform_booking_price_element':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Provides a custom webform element with Title and Price fields for Webform Booking.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function webform_booking_price_element_theme() {
+  return [
+    'webform_booking_price_element' => [
+      'render element' => 'element',
+    ],
+  ];
+}

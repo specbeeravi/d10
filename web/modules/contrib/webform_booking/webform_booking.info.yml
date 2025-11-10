@@ -1,0 +1,15 @@
+name: Webform Booking
+type: module
+description: 'Provides a booking element for Webform.'
+package: Webform
+core_version_requirement: ^10 || ^11
+dependencies:
+  - webform:webform
+  - webform:webform_ui
+
+configure: webform_booking.settings
+
+# Information added by Drupal.org packaging script on 2025-06-05
+version: '1.1.10'
+project: 'webform_booking'
+datestamp: 1749113332

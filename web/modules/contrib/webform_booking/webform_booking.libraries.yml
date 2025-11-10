@@ -1,0 +1,22 @@
+webform_booking:
+  version: 1.0
+  css:
+    theme:
+      css/webform_booking.css: {}
+  js:
+    js/webform_booking.js: {}
+    js/webform_booking_paypal.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once
+    - core/drupalSettings
+
+webform_booking_element:
+  css:
+    theme:
+      css/webform_element.css: {}
+
+paypal:
+  js:
+    https://www.paypal.com/sdk/js: { type: external, attributes: { 'data-client-id': 'CLIENT_ID_PLACEHOLDER' } }

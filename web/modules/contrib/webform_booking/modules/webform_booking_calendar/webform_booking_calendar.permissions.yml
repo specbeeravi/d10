@@ -1,0 +1,4 @@
+view webform booking calendar:
+  title: 'View Webform Booking Calendar'
+  description: 'Allow users to view the webform booking calendar.'
+  restrict access: true

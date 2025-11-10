@@ -1,0 +1,23 @@
+.booking-inline-field {
+  display: flex;
+  justify-content: space-between;
+}
+
+.js-webform-checkboxes:has(.week-days) {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.form-type-checkbox:has(.week-days) {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  margin-left: 0;
+}
+.week-days{
+  margin: 0;
+}
+.form-type-checkbox:has(.week-days) label {
+  margin-left: -1.5rem;
+}
