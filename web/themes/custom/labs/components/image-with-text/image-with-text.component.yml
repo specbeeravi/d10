@@ -1,0 +1,53 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Image with text on top
+group: Advanced components
+description: An image with text displayed on top of the image
+
+props:
+  type: object
+  required:
+    - image
+  properties:
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: "Image"
+      examples:
+        - src: demo-image.jpg
+          alt: "Demo image: wheat"
+          width: 3000
+          height: 2000
+    show_overlay:
+      type: boolean
+      title: Overlay
+      description: Darken the image for better text readability by adding a black overlay on top of the image.
+      default: false
+      examples: [true]
+    url:
+      type: string
+      format: uri-reference
+      title: Url
+      examples:
+        - https://example.com
+        - /node/1
+    show_arrow:
+      type: boolean
+      title: Show an arrow icon on the image
+      default: false
+      examples: [true]
+    overflow_hidden:
+      type: boolean
+      title: Disable overflow on hover effect
+      default: false
+      examples: [false]
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes
+slots:
+  content:
+    title: Content
+    description: The content.
+    examples:
+      - <div class="carousel-caption image-with-text__content "><div class="image-with-text__text-on-image"><div class="image-text-title"><h3>My amazing product</h3></div><div class="image-text-body-ontop"><p>Just look at it. Look at this amazing image. This sure is an exraordinary product. Just beautiful. Words cannot describe it.</p></div></div></div>

@@ -1,0 +1,9 @@
+{{ attach_library('sdc_styleguide/global') }}
+<div class="sdc-styleguide-pattern">
+  {%- if page.messages -%}
+    <div class="sdc-styleguide-patter__messages">
+      {{ page.messages }}
+    </div>
+  {%- endif -%}
+  {{ page.content }}
+</div>

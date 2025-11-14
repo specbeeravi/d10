@@ -1,0 +1,19 @@
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+
+{% set classes = ['photosphere'] %}
+{% set attributes = attributes.addClass(classes) %}
+
+{% set attributes = attributes.setAttribute('data-src', image.src) %}
+{% set containerSize = containerSize|default('100') %}
+
+{% if animation %}
+  {% set attributes = attributes.setAttribute('data-aos', animation) %}
+{% endif %}
+{% if animation_duration %}
+  {% set attributes = attributes.setAttribute('data-aos-duration', animation_duration) %}
+{% endif %}
+
+<div{{attributes}}>
+</div>

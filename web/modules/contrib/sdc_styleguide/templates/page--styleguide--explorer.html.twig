@@ -1,0 +1,30 @@
+{% if not user_can_view %}
+  {% include 'page.html.twig' %}
+{% else %}
+  {{ attach_library('sdc_styleguide/explorer') }}
+  <div class="sdc-styleguide-page">
+    <div class="sdc-styleguide-page__explorer">
+      <div class="sdc-styleguide__explorer-branding">
+        {{- page.branding -}}
+      </div>
+      <hr class="sdc-styleguide__explorer-separator "/>
+      <div class="sdc-styleguide-page__components-list">
+        {{- page.components -}}
+      </div>
+      <div class="sdc-styleguide-page__explorer-plugins">
+        {{- page.explorer_plugins -}}
+      </div>
+    </div>
+    <div class="sdc-styleguide-page__content">
+      <div class="sdc-styleguide-page__viewer-wrapper">
+        {{ page.content }}
+        <div class="sdc-styleguide-page__viewer-resizer-wrapper">
+          <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid" focusable="false" class="sdc-styleguide-page__viewer-resizer">
+            <title>Drag to resize Pattern Lab</title>
+            <path d="M6 0h2v20H6zM13 0h2v20h-2z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

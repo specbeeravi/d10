@@ -1,0 +1,27 @@
+# Schema for the configuration files of the Single Directory Components Styleguide module.
+sdc_styleguide.settings:
+  type: config_object
+  label: 'Single Directory Components Styleguide settings'
+  mapping:
+    component_explorer:
+      type: mapping
+      label: 'Component explorer settings'
+      mapping:
+        exclude_modules:
+          type: sequence
+          label: 'Excluded modules'
+          sequence:
+            type: string
+            label: 'Module name'
+        exclude_themes:
+          type: sequence
+          label: 'Excluded themes'
+          sequence:
+            type: string
+            label: 'Theme name'
+        exclude_others:
+          type: sequence
+          label: 'Excluded other providers'
+          sequence:
+            type: string
+            label: 'Provider name'

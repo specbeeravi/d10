@@ -1,0 +1,189 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Button
+group: Basic components
+description: Add a button to the page
+
+props:
+  type: object
+  required:
+    - button_text
+    - style
+  properties:
+    button_text:
+      type: string
+      title: Button text
+      examples:
+        - Click here
+        - More info
+    url:
+      type: string
+      format: uri-reference
+      title: Url
+      examples:
+        - https://example.com
+        - /node/1
+    new_tab:
+      type: boolean
+      title: Open link in new tab
+      default: false
+      examples: [false]
+    align_center:
+      type: boolean
+      title: center align this button
+      default: false
+      examples: [false]
+    stretch:
+      type: boolean
+      title: Width 100%
+      default: false
+      examples: [false]
+    style:
+      type: string
+      title: Button style
+      enum:
+        - btn-primary
+        - btn-secondary
+        - btn-success
+        - btn-danger
+        - btn-warning
+        - btn-info
+        - btn-light
+        - btn-dark
+        - btn-link
+        - btn-outline-primary
+        - btn-outline-secondary
+        - btn-outline-success
+        - btn-outline-danger
+        - btn-outline-warning
+        - btn-outline-info
+        - btn-outline-light
+        - btn-outline-dark
+        - btn-outline-link
+      "meta:enum":
+        btn-primary: Primary
+        btn-secondary: Secondary
+        btn-success: Success
+        btn-danger: Danger
+        btn-warning: Warning
+        btn-info: Info
+        btn-light: Light
+        btn-dark: Dark
+        btn-link: Link
+        btn-outline-primary: Primary - outline
+        btn-outline-secondary: Secondary - outline
+        btn-outline-success: Success - outline
+        btn-outline-danger: Danger - outline
+        btn-outline-warning: Warning - outline
+        btn-outline-info: Info - outline
+        btn-outline-light: Light - outline
+        btn-outline-dark: Dark - outline
+        btn-outline-link: Link - outline
+      default: btn-primary
+      examples: ["btn-primary", "btn-secondary"]
+    size:
+      type: string
+      title: Size variation
+      enum:
+        - "btn-sm"
+        - "btn-lg"
+      "meta:enum":
+        btn-sm: Small
+        btn-lg: Large
+    margin_top:
+      type: string
+      title: Top margin (between this and the previous component)
+      enum:
+        - "mt-1"
+        - "mt-2"
+        - "mt-3"
+        - "mt-4"
+        - "mt-5"
+        - "mt-6"
+        - "mt-7"
+        - "mt-8"
+        - "mt-9"
+        - "mt-10"
+        - "mt-11"
+        - "mt-12"
+      meta:enum:
+        "mt-1": "1 - smallest available margin"
+        "mt-2": "2"
+        "mt-3": "3"
+        "mt-4": "4"
+        "mt-5": "5"
+        "mt-6": "6"
+        "mt-7": "7"
+        "mt-8": "8"
+        "mt-9": "9"
+        "mt-10": "10"
+        "mt-11": "11"
+        "mt-12": "12 - largest available margin"
+    margin_bottom:
+      type: string
+      title: Bottom margin (between this and the next component)
+      enum:
+        - "mb-1"
+        - "mb-2"
+        - "mb-3"
+        - "mb-4"
+        - "mb-5"
+        - "mb-6"
+        - "mb-7"
+        - "mb-8"
+        - "mb-9"
+        - "mb-10"
+        - "mb-11"
+        - "mb-12"
+      meta:enum:
+        "mb-1": "1 - smallest available margin"
+        "mb-2": "2"
+        "mb-3": "3"
+        "mb-4": "4"
+        "mb-5": "5"
+        "mb-6": "6"
+        "mb-7": "7"
+        "mb-8": "8"
+        "mb-9": "9"
+        "mb-10": "10"
+        "mb-11": "11"
+        "mb-12": "12 - largest available margin"
+    animation:
+      type: string
+      title: Animation
+      description: Add animation when this component comes into view.
+      enum:
+        - fade-up
+        - fade-down
+        - fade-right
+        - fade-left
+        - zoom-in
+        - zoom-out
+        - slide-up
+        - flip-up
+        - flip-down
+        - flip-right
+        - flip-left
+    animation_duration:
+      type: integer
+      title: Animation duration
+      description: Time taken by the animation to complete (in milliseconds).
+      enum:
+        - 500
+        - 1000
+        - 1500
+        - 2000
+        - 2500
+        - 3000
+      default: 2000
+    extra_classes:
+      type: array
+      title: Extra classes
+      default: []
+      items:
+        type: "string"
+      description: Optionally add extra classes to this component.
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes

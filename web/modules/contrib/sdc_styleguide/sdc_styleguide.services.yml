@@ -1,0 +1,12 @@
+services:
+  sdc_styleguide.demo_manager:
+    class: Drupal\sdc_styleguide\Service\SDCDemoManager
+    arguments: ['%app.root%', '@plugin.manager.sdc', '@plugin.manager.sdc_styleguide_story_property_type', '@module_handler', '@theme.manager', '@config.factory']
+
+  plugin.manager.sdc_styleguide:
+    class: Drupal\sdc_styleguide\SDCStyleguidePluginManager
+    parent: default_plugin_manager
+
+  plugin.manager.sdc_styleguide_story_property_type:
+    class: Drupal\sdc_styleguide\SDCStyleguideStoryPropertyTypePluginManager
+    parent: default_plugin_manager

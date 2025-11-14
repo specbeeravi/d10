@@ -1,0 +1,25 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Label with text
+group: Advanced components
+description: A label + text component
+
+props:
+  type: object
+  properties:
+    line_top:
+      type: boolean
+      title: Display line above
+      default: true
+      examples: [true]
+
+# Create a slot for the content inside the hero so users can add headings, text, buttons, etc.
+slots:
+  label:
+    title: Label
+    examples:
+      - Aantal users
+  text:
+    title: Text
+    examples:
+      - "10"

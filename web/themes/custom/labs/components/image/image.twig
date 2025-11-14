@@ -1,0 +1,39 @@
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+
+{% set classes = ['image'] %}
+{% set attributes = attributes.addClass(classes) %}
+
+{% set attributes = attributes.setAttribute('src', image.src) %}
+{% set attributes = attributes.setAttribute('alt', image.alt) %}
+{% set attributes = attributes.setAttribute('loading', 'lazy') %}
+{% set containerSize = containerSize|default('100') %}
+
+{% if srcset %}
+  {% set attributes = attributes.setAttribute('srcset', srcset) %}
+  {% set attributes = attributes.setAttribute('sizes', 'auto ' ~ containerSize ~ 'vw') %}
+{% endif %}
+
+{% if width %}
+  {% set attributes = attributes.setAttribute('width', width) %}
+  {% set attributes = attributes.setAttribute('height', auto) %}
+{% endif %}
+
+{% set is_svg = '.svg' in image.src %}
+
+{% if not width and not is_svg and image.width %}
+    {% set attributes = attributes.setAttribute('width', image.width) %}
+    {% set attributes = attributes.setAttribute('height', image.height) %}
+    {% set attributes = attributes.setAttribute('srcset', image.src|toSrcSet(width)) %}
+    {% set attributes = attributes.setAttribute('sizes', 'auto ' ~ containerSize ~ 'vw') %}
+{% endif %}
+
+{% if animation %}
+  {% set attributes = attributes.setAttribute('data-aos', animation) %}
+{% endif %}
+{% if animation_duration %}
+  {% set attributes = attributes.setAttribute('data-aos-duration', animation_duration) %}
+{% endif %}
+
+<img{{attributes}}/>

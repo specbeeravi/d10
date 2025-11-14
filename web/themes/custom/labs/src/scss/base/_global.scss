@@ -1,0 +1,23 @@
+@use '../settings' as *;
+
+.dialog-off-canvas-main-canvas {
+  position: relative;
+}
+  
+body {
+  word-break: break-word;
+  color: $color--black;
+  font-family: $font-family;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  -webkit-font-smoothing: antialiased;
+}
+  
+* {
+  box-sizing: border-box;
+
+  &:focus {
+    outline-width: 0.0625rem;
+    outline-offset: 0.125rem;
+  }
+}

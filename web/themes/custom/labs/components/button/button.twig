@@ -1,0 +1,38 @@
+{% set margin_top = [margin_top] ?? [] %}
+{% set margin_bottom = [margin_bottom] ?? [] %}
+{% set size = [size] ?? [] %}
+{% set stretch = stretch ? ['w-100'] : [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+{% set classes = ['btn', style]|merge(margin_top)|merge(margin_bottom)|merge(size)|merge(stretch)|merge(extra_classes) %}
+{% set html_tag = url ? 'a' : 'div' %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+
+{% set attributes = attributes.addClass(classes) %}
+
+{% if url %}
+  {% set attributes = attributes.setAttribute('href', url) %}
+{% endif %}
+{% if new_tab %}
+  {% set attributes = attributes.setAttribute('target', '_blank') %}
+{% endif %}
+{% if animation %}
+  {% set attributes = attributes.setAttribute('data-aos', animation) %}
+{% endif %}
+{% if animation_duration %}
+  {% set attributes = attributes.setAttribute('data-aos-duration', animation_duration) %}
+{% endif %}
+
+{% apply spaceless %}
+{% if align_center %}
+  <div class="text-center">
+{% endif %}
+  <{{ html_tag }}{{ attributes }}>
+    {{ button_text }}
+  </{{ html_tag }}>
+{% if align_center %}
+  </div>
+{% endif %}
+{% endapply %}

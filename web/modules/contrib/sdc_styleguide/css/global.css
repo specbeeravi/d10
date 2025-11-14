@@ -1,0 +1,81 @@
+html.sdc-styleguide-html,
+html.sdc-styleguide-html body {
+  background: none;
+  padding: 0 !important;
+}
+
+.path-styleguide .block-system-main-block,
+.path-styleguide .region--content {
+  margin: 0;
+}
+
+.sdc-styleguide-pattern {
+  --s: 15px;
+  --c1: #ffffff;
+  --c2: #f2f2f2;
+  --g: #0000 45%, var(--c1) 46% 54%,#0000 55%;
+  background: linear-gradient( 60deg,var(--g)), linear-gradient(-60deg,var(--g)) var(--c2);
+  background-size: var(--s) calc(tan(60deg)*var(--s));
+  box-sizing: border-box;
+  justify-content: center;
+
+  &:not(:has(.sdc-styleguide-demo)) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100dvh - 2px);
+    padding: 2rem;
+  }
+}
+
+.sdc-styleguide-demo {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: 2rem;
+  max-width: 100%;
+
+  @media (min-width: 768px) {
+    padding: 2.5rem 5rem;
+  }
+
+  &:not([data-is-padded]) {
+    padding: 0;
+  }
+
+  &[data-vertical="top"] {
+    justify-content: flex-start;
+  }
+
+  &[data-vertical="center"] {
+    justify-content: center;
+  }
+
+  &[data-vertical="bottom"] {
+    justify-content: flex-end;
+  }
+
+  &[data-horizontal="left"] {
+    align-items: flex-start;
+  }
+
+  &[data-horizontal="center"] {
+    align-items: center;
+  }
+
+  &[data-horizontal="right"] {
+    align-items: flex-end;
+  }
+}
+
+.sdc-styleguide-demo__filler {
+  width: 100%;
+}
+
+/**
+  * Drupal live announce is adding 1px at the bottom of the page that is causing
+  * the scrollbar to show. This is a workaround to fix that.
+ */
+.path-styleguide #drupal-live-announce {
+  bottom: 0;
+}

@@ -1,0 +1,20 @@
+{% set flex_type = [flex_type] ?? ['d-flex'] %}
+{% set flex_direction = [flex_direction] ?? [] %}
+{% set justify_content = [justify_content] ?? [] %}
+{% set align_items = [align_items] ?? [] %}
+{% set flex_wrap = flex_wrap ? ['flex-wrap'] : [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+
+{% set classes = []|merge(flex_type)|merge(flex_direction)|merge(justify_content)|merge(align_items)|merge(flex_wrap)|merge(extra_classes) %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+{% set attributes = attributes.addClass(classes) %}
+
+{% apply spaceless %}
+<div{{ attributes }}>
+    {% block content %}
+    {% endblock %}
+</div>
+{% endapply %}

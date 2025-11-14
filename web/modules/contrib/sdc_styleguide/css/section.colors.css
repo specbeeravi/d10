@@ -1,0 +1,32 @@
+.styleguide-colors__swatches {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.styleguide-color-swatch {
+  background: #FFF;
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.styleguide-color-swatch__description {
+  margin: 1rem 0;
+}
+
+.styleguide-color-swatch__color {
+  display: block;
+  outline: 1px dashed #000;
+  padding: 1rem;
+  width: 100%;
+}
+
+.styleguide-color-swatch__codes {
+  display: flex;
+  font-size: 0.75rem;
+  justify-content: space-between;
+  margin: auto 0 0;
+}

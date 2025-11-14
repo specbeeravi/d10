@@ -1,0 +1,63 @@
+{# Set column widths #}
+{% set col1_class = 'col-md-6' %}
+{% set col2_class = 'col-md-6' %}
+{% if column_widths == '3366' %}
+	{% set col1_class = 'col-md-4' %}
+	{% set col2_class = 'col-md-8' %}
+{% endif %}
+{% if column_widths == '6633' %}
+	{% set col1_class = 'col-md-8' %}
+	{% set col2_class = 'col-md-4' %}
+{% endif %}
+{% if column_widths == '2575' %}
+	{% set col1_class = 'col-md-3' %}
+	{% set col2_class = 'col-md-9' %}
+{% endif %}
+{% if column_widths == '7525' %}
+	{% set col1_class = 'col-md-9' %}
+	{% set col2_class = 'col-md-3' %}
+{% endif %}
+
+{% if vertical_align_center %}
+	{% set col1_class = col1_class ~ ' d-flex flex-column justify-content-center' %}
+	{% set col2_class = col2_class ~ ' d-flex flex-column justify-content-center' %}
+{% endif %}
+
+{# Add extra classes from selected options #}
+{% set bg_color = [bg_color] ?? [] %}
+{% set padding_top = [padding_top] ?? [] %}
+{% set padding_bottom = [padding_bottom] ?? [] %}
+{% set margin_top = [margin_top] ?? [] %}
+{% set margin_bottom = [margin_bottom] ?? [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+
+{% set classes = []|merge(bg_color)|merge(padding_top)|merge(padding_bottom)|merge(margin_top)|merge(margin_bottom)|merge(extra_classes) %}
+
+{# Create attributes element if it does not exist yet #}
+{% if not attributes %}
+	{% set attributes = create_attribute() %}
+{% endif %}
+
+{# Add our classes to the attributes element #}
+{% set attributes = attributes.addClass(classes) %}
+
+{# Add extra padding for large gutters #}
+{% if gutters and gutters == 'gx-0' %}
+	{% set content_width = content_width ~ ' px-0' %}
+{% endif %}
+{% if gutters and gutters == 'gx-5' %}
+	{% set content_width = content_width ~ ' px-5' %}
+{% endif %}
+
+{% apply spaceless %}
+<div{{attributes}}>
+	<div class="{{content_width}}">
+		<div class="row {{gutters}}">
+			<div class="{{ col1_class }}"> {% block column_one %}{% endblock %}
+			</div>
+			<div class="{{ col2_class }}"> {% block column_two %}{% endblock %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endapply %}

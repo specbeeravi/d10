@@ -1,0 +1,35 @@
+{% set attributes = attributes.addClass('video') %}
+
+{% if is_hero %}
+  {% set attributes = attributes.addClass('video--hero') %}
+{% endif %}
+
+{% if poster %}
+  {% set attributes = attributes.setAttribute('poster', poster.src) %}
+{% endif %}
+
+{% set attributes = attributes.setAttribute('style', 'aspect-ratio: ' ~ aspect_ratio|default('16/9') ~ '; width: 100%; object-fit: '~ object_fit|default('cover') ~ ';') %}
+
+{% if show_controls %}
+  {% set attributes = attributes.setAttribute('controls', true) %}
+{% endif %}
+
+{% if autoplay %}
+  {% set attributes = attributes.setAttribute('autoplay', true) %}
+{% endif %}
+
+{% if play_when_visible %}
+  {% set attributes = attributes.addClass('play-when-visible') %}
+{% endif %}
+
+{% if muted %}
+  {% set attributes = attributes.setAttribute('muted', true) %}
+{% endif %}
+
+{% if loop %}
+  {% set attributes = attributes.setAttribute('loop', true) %}
+{% endif %}
+
+<video {{ attributes }}>
+  <source src="{{ video.src }}">
+</video>

@@ -1,0 +1,26 @@
+name: Card grid array
+description: This shows a series of cards in the slots using a render array
+props:
+  title: 'My card grid with render arrays'
+  description: 'This is a demo card grid that reuses demos to generate the cards in the grid. The cards are defined as a render array directly in the demo definition.'
+
+slots:
+  cards:
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.image'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.video'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.vimeo_video'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.image'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.video'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.vimeo_video'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.image'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.video'
+    - theme: styleguide_demo
+      demo: 'sdc_styleguide_demo_components:card.demo.vimeo_video'

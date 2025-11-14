@@ -1,0 +1,18 @@
+{% set classes = ['label-text'] %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+{% if line_top %}
+    {% set attributes = attributes.addClass('line-top') %}
+{% endif %}
+<div{{ attributes.addClass(classes) }}>
+      <div class="label-text__label">
+        {% block label %}
+		{% endblock %}
+      </div>
+    <div class="label-text__text">
+        {% block text %}
+		{% endblock %}
+      </div>
+</div>

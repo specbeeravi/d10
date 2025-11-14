@@ -1,0 +1,5 @@
+# Ignore custom theme build artifacts
+node_modules
+dist
+components/**/*.css
+components/**/*.js

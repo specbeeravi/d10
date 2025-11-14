@@ -1,0 +1,67 @@
+global:
+  css:
+    theme:
+      css/global.css: { }
+
+scrollbar:
+  css:
+    component:
+      https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.10.0/styles/overlayscrollbars.min.css: { type: external }
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.10.0/browser/overlayscrollbars.browser.es6.min.js: { type: external }
+
+explorer:
+  css:
+    layout:
+      css/explorer.css: { }
+  js:
+    js/explorer.js: { }
+  dependencies:
+    - core/drupal
+    - core/once
+    - sdc_styleguide/global
+
+welcome:
+  css:
+    layout:
+      css/welcome.css: { }
+  dependencies:
+    - sdc_styleguide/global
+
+section.colors:
+  css:
+    theme:
+      css/section.colors.css: { }
+
+plugin.layout-switcher:
+  css:
+    layout:
+      css/plugin.layout-switcher.css: { }
+  js:
+    js/layout-switcher.js: { }
+  dependencies:
+    - sdc_styleguide/explorer
+    - sdc_styleguide/scrollbar
+
+highlightjs:
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js: { type: external }
+  css:
+    component:
+      https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css: { type: external }
+
+highlightjs-yaml:
+  dependencies:
+    - sdc_styleguide/highlightjs
+  js:
+    https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js: { type: external }
+
+axe-validation:
+  js:
+    "https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.10.2/axe.min.js": { type: external }
+    js/axe.js: { }
+  css:
+    component:
+      css/axe.css: { }
+  dependencies:
+    - core/drupal

@@ -1,0 +1,9 @@
+<div class="card-grid">
+  <h2 class="card-grid__title font-bold text-4xl">{{ title }}</h2>
+  <div class="card-grid__description">{{ description }}</div>
+  <div class="my-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% block cards %}
+      <!-- You should add the cards here. -->
+    {% endblock %}
+  </div>
+</div>

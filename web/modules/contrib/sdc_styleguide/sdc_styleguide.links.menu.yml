@@ -1,0 +1,13 @@
+# SDC Styleguide explorer menu items definition
+sdc_styleguide.explorer:
+  title: 'SDC Styleguide'
+  description: 'SDC Styleguide explorer.'
+  route_name: sdc_styleguide.explorer
+  parent: system.themes_page
+
+sdc_styleguide.settings:
+  title: SDC Styleguide Settings
+  description: Manages SDC Styleguide configuration
+  parent: system.admin_config_ui
+  route_name: sdc_styleguide.settings
+  weight: 10

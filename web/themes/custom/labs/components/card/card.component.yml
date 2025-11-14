@@ -1,0 +1,90 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Card
+group: Advanced components
+description: A Card component that can have an image, title, content and CTA.
+
+props:
+  type: object
+  properties:
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Image
+      description: The card image
+    title:
+      type: string
+      title: Title
+      description: The card title
+      examples:
+        - "Amazing card title"
+    text_content:
+      type: string
+      title: Content
+      contentMediaType: text/html
+      x-formatting-context: block
+      description: Your text content
+      examples:
+        ["<p>Add your <strong>formatted text</strong> content here.</p>"]
+    cta_url:
+      type: string
+      format: uri-reference
+      title: Url for the CTA button or card
+      examples:
+        - https://example.com
+        - /node/1
+    cta_text:
+      type: string
+      title: CTA button text
+      examples:
+        - Click here
+        - More info
+    new_tab:
+      type: boolean
+      title: Open link in new tab
+      default: false
+      examples: [false]
+    card_clickable:
+      type: boolean
+      title: Make entire card clickable
+      default: false
+      examples: [false]
+    layout_horizontal:
+      type: boolean
+      title: "Horizontal: image left of text"
+      default: false
+      examples: [false]
+    border_color:
+      type: string
+      title: Border color
+      enum:
+        - "border-primary"
+        - "border-primary-subtle"
+        - "border-secondary"
+        - "border-secondary-subtle"
+        - "border-success"
+        - "border-success-subtle"
+        - "border-danger"
+        - "border-danger-subtle"
+        - "border-warning"
+        - "border-warning-subtle"
+        - "border-info"
+        - "border-info-subtle"
+        - "border-light"
+        - "border-light-subtle"
+        - "border-dark"
+        - "border-dark-subtle"
+        - "border-black"
+        - "border-white"
+    align_center:
+      type: boolean
+      title: center align text
+      default: false
+      examples: [false]
+# Create a slot for the content inside the hero so users can add headings, text, buttons, etc.
+slots:
+  content:
+    title: Content
+    description: Extra card content.
+    examples:
+      - <p>You can add additional card content here</p>

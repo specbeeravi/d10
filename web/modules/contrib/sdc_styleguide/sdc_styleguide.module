@@ -1,0 +1,472 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the Single Directory Components Styleguide module.
+ */
+
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Element\StatusMessages;
+use \Drupal\Core\Template\Attribute;
+use Drupal\Core\Url;
+
+define('SDC_STYLEGUIDE_ATTRIBUTES_REGEX', '@^([a-z](\-?\w+)*)(="([^"]+)")?$@');
+
+/**
+ * Implements hook_theme().
+ */
+function sdc_styleguide_theme() {
+  return [
+    'page__styleguide' => [
+      'base hook' => 'page',
+      'render element' => 'component',
+      'override preprocess functions' => TRUE,
+    ],
+    'page__styleguide__explorer' => [
+      'base hook' => 'page',
+      'render element' => 'styleguide',
+      'override preprocess functions' => TRUE,
+    ],
+    'styleguide_welcome_message' => [
+      'variables' => [
+        'logo' => [
+          'alt' => t('SDC Styleguide Logo - ChatGPT generated'),
+          'height' => 400,
+          'url' => base_path() . \Drupal::service('extension.list.module')->getPath('sdc_styleguide') . '/images/sdc-styleguide-ai-logo.png',
+          'width' => 400,
+        ],
+      ],
+    ],
+    'styleguide_component_viewer' => [
+      'variables' => [
+        'url' => NULL,
+      ],
+    ],
+    'styleguide_explorer_group' => [
+      'variables' => [
+        'title' => NULL,
+        'components' => NULL,
+      ],
+    ],
+    'styleguide_demo' => [
+      'variables' => [
+        'demo' => NULL,
+      ],
+    ],
+    'styleguide_section' => [
+      'variables' => [
+        'section' => NULL,
+        'information' => NULL,
+      ],
+    ],
+    'styleguide_section__colors' => [
+      'base hook' => 'styleguide_section',
+      'variables' => [
+        'section' => NULL,
+      ],
+    ],
+    'styleguide_section__text' => [
+      'base hook' => 'styleguide_section',
+      'variables' => [
+        'section' => NULL,
+      ],
+    ],
+    'styleguide_a11y_evaluation' => [
+      'variables' => [],
+    ],
+    'layout_switcher_sdc_styleguide_plugin' => [
+      'variables' => [],
+    ],
+  ];
+}
+
+/**
+ * Workaround to get custom variables on the styleguide explorer page.
+ *
+ * Since we don't want to render regions in the styleguide page, the page
+ * contents are replaced and we set a custom set of variables.
+ *
+ * @param mixed $set
+ *   When not NULL, replaces the set of variables.
+ *   When NULL, alters nothing.
+ *
+ * @return mixed|null
+ *   The variables that are currently set.
+ */
+function _sdc_styleguide_page_variables($set = NULL) {
+  static $variables = NULL;
+
+  if ($set) {
+    $variables = $set;
+  }
+
+  return $variables;
+}
+
+/**
+ * Implements preprocess_page__HOOK().
+ *
+ * Implementation for the `styleguide` section and the `explorer` variation.
+ */
+function sdc_styleguide_preprocess_page__styleguide__explorer(&$variables) {
+  $user = \Drupal::currentUser();
+  $variables['user_can_view'] = $user->hasPermission('use sdc explorer');
+  $regions = _sdc_styleguide_page_variables();
+  if (!empty($regions)) {
+    foreach ($regions as $name => $value) {
+      $variables['page'][$name] = $value;
+    }
+  }
+}
+
+/**
+ * Implements preprocess_page__HOOK().
+ *
+ * Implementation for the `styleguide` section.
+ */
+function sdc_styleguide_preprocess_page__styleguide(&$variables) {
+  $route = \Drupal::routeMatch()->getRouteName();
+  if (in_array($route, ['sdc_styleguide.explorer'])) {
+    return;
+  }
+
+  $messages_found = FALSE;
+  foreach (array_keys($variables['page']['content']) as $key) {
+    // Remove page title because it is unnecesary for our purposes.
+    if (strpos($key, '_page_title') !== FALSE) {
+      unset($variables['page']['content'][$key]);
+    }
+    else if (strpos($key, 'messages') !== FALSE) {
+      $messages_found = TRUE;
+    }
+  }
+  if ($messages_found) {
+    return;
+  }
+
+  // Adds messages if for some reason not added. This is to force warnings on component form.
+  $variables['page']['messages'] = StatusMessages::renderMessages();
+}
+
+
+/**
+ * Implements hook_preprocess_html__HOOK() for the `styleguide` section.
+ */
+function sdc_styleguide_preprocess_html__styleguide(&$variables) {
+  // Disables admin toolbar on the internal pages.
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  if (strpos($route_name, 'sdc_styleguide.') != 0 || $route_name == 'sdc_styleguide.explorer') {
+    return;
+  }
+
+  // Adds control class.
+  $variables['html_attributes']->addClass('sdc-styleguide-html');
+
+  // Disables the admin toolbar or gin toolbar.
+  $toolbars_to_remove = [
+    'toolbar',
+    'navigation',
+  ];
+  foreach ($toolbars_to_remove as $toolbar) {
+    if (isset($variables['page_top'][$toolbar])) {
+      $variables['page_top'][$toolbar]['#access'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Prepares a sdc styleguide component demo slot.
+ *
+ * @param array|string $slot
+ *   The slot data, which can be a string, an array of strings or an array of
+ *   arrays.
+ *
+ * @return array
+ *  The render array with the slot data set up to be rendered inside an SDC.
+ */
+function _sdc_styleguide_prepare_demo_slot($slot) {
+  // Strings are passed as inline templates.
+  if (is_string($slot)) {
+    return ['#type' => 'inline_template', '#template' => $slot];
+  }
+
+  // Arrays are more complex...
+  if (is_array($slot)) {
+
+    // If it turns out it is a render array without hashes, we fix the indexes.
+    if (isset($slot['theme'])) {
+      $new_array = [];
+      foreach (array_keys($slot) as $key) {
+        $new_array["#{$key}"] = $slot[$key];
+      }
+      return $new_array;
+    }
+
+    // Otherwise we return it as if it is a render array already.
+    if (isset($slot['#theme'])) {
+      return $slot;
+    }
+
+    // Final scenario is we have an array of elements, so we process each one
+    // recursively.
+    foreach ($slot as &$data) {
+      $data = _sdc_styleguide_prepare_demo_slot($data);
+    }
+
+    return $slot;
+  }
+}
+
+/**
+ * Implements hook_preprocess_styleguide_demo().
+ */
+function sdc_styleguide_preprocess_styleguide_demo(array &$variables) {
+  $demo_name = $variables['demo'];
+  if (!($demo = \Drupal::service('sdc_styleguide.demo_manager')->getDemoById($demo_name))) {
+    $variables['demo_component'] = [
+      '#markup' => t('Demo @demo not found.', ['@demo' => $demo_name]),
+    ];
+    return;
+  }
+
+  $variables['demo_component'] = [
+    '#type' => 'component',
+    '#component' => $demo['component_id'],
+    '#props' => $demo['properties'] ?? $demo['props'] ?? [],
+    '#slots' => array_map(static fn ($x) => _sdc_styleguide_prepare_demo_slot($x), $demo['slots'] ?? []),
+  ];
+
+}
+
+/**
+ * Implements hook_styleguide_demo_form_element_complex_type_alter().
+ */
+function sdc_styleguide_styleguide_demo_form_element_complex_type_alter(&$element, $sdc_property) {
+  if ($sdc_property['type'] !== Attribute::class) {
+    return;
+  }
+
+  $format_description = t('Drupal attributes need to be written in the text area in the format @format, one attribute per line. @examples', [
+    '@format' => new FormattableMarkup(' <strong>@format</strong>', [
+      '@format' => 'attribute-name="attribute-value"'
+    ]),
+    '@examples' => new FormattableMarkup('<code><pre>class="@classes"' . PHP_EOL . 'id="@id"</pre></code>', [
+      '@classes' => 'my classes go here',
+      '@id' => 'my-id-here',
+    ]),
+  ]);
+  $element = [
+    '#description' => ($sdc_property['description'] ?? '') . PHP_EOL . $format_description,
+    '#required' => $sdc_property['required'] ?? FALSE,
+    '#title' => $sdc_property['title'],
+    '#type' => 'textarea',
+    '#validate' => ['_sdc_styleguide_styleguide_demo_form_element_complex_type_validate_attribute']
+  ];
+}
+
+/**
+ * Implements hook_styleguide_demo_form_submitted_complex_type_value_alter().
+ */
+function sdc_styleguide_styleguide_demo_form_submitted_complex_type_value_alter(&$value, $submitted_value, $sdc_property) {
+  if ($sdc_property['type'] !== Attribute::class) {
+    return;
+  }
+
+  $attribute = new Attribute();
+  $matches = [];
+  if (preg_match_all('/([a-zA-Z0-9-_]+)(="([^"]+)")?/', $submitted_value, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      if (isset($match[3])) {
+        if ($match[1] == 'class') {
+          $match[3] = explode(' ', $match[3]);
+        }
+      }
+      $attribute->setAttribute($match[1], $match[3] ?? '');
+    }
+  }
+  $value = $attribute;
+}
+
+/**
+ * Validates the submitted value for our Attributes complex type.
+ */
+function _sdc_styleguide_styleguide_demo_form_element_complex_type_validate_attribute(&$element, FormStateInterface $form_state, $value) {
+  if (empty($value)) {
+    return;
+  }
+
+  $values = explode(PHP_EOL, trim($value));
+  foreach ($values as $val) {
+    if (!preg_match(SDC_STYLEGUIDE_ATTRIBUTES_REGEX, trim($val))) {
+      $form_state->setError($element, t('Invalid attributes value for field @field on value @value.', [
+        '@field' => $element['#title'],
+        '@value' => $val,
+      ]));
+    }
+  }
+}
+
+/**
+ * Implements hook_styleguide_demo_form_export_complex_type_value_alter().
+ */
+function sdc_styleguide_styleguide_demo_form_export_complex_type_value_alter(&$value, $original_value, $sdc_property) {
+  if ($sdc_property['type'] !== Attribute::class) {
+    return;
+  }
+
+  $value = $original_value->toArray();
+}
+
+/**
+ * Implements hook_styleguide_demo_convert_stored_value_to_complex_type_alter().
+ */
+function sdc_styleguide_styleguide_demo_convert_stored_value_to_complex_type_alter(&$value, $original_value, $sdc_property) {
+  if ($sdc_property['type'] != Attribute::class) {
+    return;
+  }
+
+  // Splits by line feed and builds an attributes object.
+  $value = new Attribute();
+  if (is_array($original_value)) {
+    foreach ($original_value as $attrName => $attrVal) {
+      $value->setAttribute($attrName, $attrVal);
+    }
+  }
+  else {
+    \Drupal::logger('sdc_styleguide')->warning(t('String format for HTML attributes is deprecated. Please convert to array.'));
+    $attributes = explode(PHP_EOL, $original_value);
+    foreach ($attributes as $attribute) {
+      $attribute = explode('=', $attribute);
+      $value->setAttribute(trim($attribute[0]), trim($attribute[1]));
+    }
+  }
+}
+
+function _sdc_styleguide_quick_line($line) {
+  return [
+    '#markup' => $line,
+    '#prefix' => '<p>',
+    '#suffix' => '</p>',
+  ];
+}
+
+function _sdc_styleguide_quick_list($list) {
+  return [
+    '#theme' => 'item_list',
+    '#items' => $list,
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ *
+ * Implementation for `styleguide_section`.
+ */
+function sdc_styleguide_theme_suggestions_styleguide_section(array $variables) {
+  return [
+    'styleguide_section__' . $variables['section'],
+  ];
+}
+
+function _sdc_styleguide_get_default_sections() {
+  return [
+    'colors' => [
+      'name' => t('Colors'),
+      'short_description' => t('Theme colors'),
+      'description' => [
+        'intro' => [
+          _sdc_styleguide_quick_line(t('The color palette represents our character and brings a hint of freshness to our products.')),
+          _sdc_styleguide_quick_line(t("Because content readability for everyone is our main goal, we have made accessibility considerations a top priority. Each color detailed below indicates its WCAG conformance level (“AA” or “AAA”). This level is based on a color's contrast against white or black.")),
+        ],
+        'disclaimer' => [
+          '#markup' => t('Heavily copied from @link. You must override this.', [
+            '@link' => Link::fromTextAndUrl(
+                'Wikimedia Design',
+                Url::fromUri('https://design.wikimedia.org/style-guide/visual-style_colors.html')
+            )->toString(),
+          ]),
+        ],
+      ],
+      'details' => [
+        'color_groups' => [
+          'base' => [
+            'name' => t('Base colors'),
+            'description' => [
+              _sdc_styleguide_quick_line(t('Base colors define the content surface and the main color for content. Different shades of paper and ink are useful to emphasize or de-emphasize different content areas.')),
+              _sdc_styleguide_quick_line(t('Base colors range from pure white (Base100) to true black (Base0). Intermediate shades of gray include a tint of blue for greater harmony with our accent colors.')),
+              _sdc_styleguide_quick_line(t('When applying text on a surface, you need to check the color contrast between the text and the background:')),
+              _sdc_styleguide_quick_list([
+                t('Base100…50 are safe text colors for a black surface.'),
+                t('Base30…0 are safe text colors for a white surface..')
+              ]),
+            ],
+            'colors' => [
+              'base100' => [
+                'name' => t('Base100'),
+                'description' => t('If needed you can add a description'),
+                'text' => 'AaBbCc',
+                'hex' => '#fff',
+                'rgb' => 'rgb(255, 255, 255)',
+                'hsl' => 'hsl(0, 0%, 100%)',
+              ],
+              'base70' => [
+                'name' => t('Base70'),
+                'description' => t('If needed you can add a description'),
+                'text' => 'AaBbCc',
+                'hex' => '#c8ccd1',
+                'rgb' => 'rgb(200, 204, 209)',
+                'hsl' => 'hsl(213, 9%, 80%)',
+              ],
+              'base20' => [
+                'name' => t('Base20'),
+                'description' => t('If needed you can add a description'),
+                'text' => 'AaBbCc',
+                'hex' => '#54595d',
+                'rgb' => 'rgb(84, 89, 93)',
+                'hsl' => 'hsl(207, 5%, 35%)',
+              ],
+            ],
+          ],
+          'accent' => [
+            'name' => t('Accent colors'),
+            'description' => [
+              _sdc_styleguide_quick_line(t('Accent colors are used to emphasize actions and to highlight key information. Blue is a natural choice in our context, where it has been the default color used for links and conveys the idea of action.')),
+              _sdc_styleguide_quick_line(t('There are three shades provided for when you need a lighter (Accent90), regular (Accent50) or a darker (Accent30) version of blue.')),
+              _sdc_styleguide_quick_line(t('Accent50 is suitable to use for text and as background. When used for link text, this color provides sufficient contrast with black text. When used as background, it provides sufficient contrast with white text.')),
+            ],
+            'colors' => [
+              'primary' => [
+                'name' => t('Primary'),
+                'description' => t('Brand primary color.'),
+                'text' => 'AaBbCc',
+                'hex' => '#161f50',
+                'rgb' => 'rgb(22, 31, 80)',
+                'hsl' => 'hsl(207, 5%, 35%)',
+              ],
+              'secondary' => [
+                'name' => t('Secondary'),
+                'description' => t('A general secondary color.'),
+                'text' => 'AaBbCc',
+                'hex' => '#6432a9',
+                'rgb' => 'rgb(100, 50, 168)',
+                'hsl' => 'hsl(265, 54%, 43%)',
+              ],
+            ],
+          ],
+        ],
+      ],
+    ],
+    'text' => [
+      'name' => t('Text'),
+      'short_description' => t('Text related styles'),
+      'description' => [
+        'intro' => [
+          _sdc_styleguide_quick_line(t("Some text regarding the importance of testing text elements.")),
+        ],
+      ],
+      'details' => [],
+    ],
+  ];
+}

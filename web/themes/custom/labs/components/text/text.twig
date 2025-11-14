@@ -1,0 +1,21 @@
+{% set color = [color] ?? [] %}
+{% set text_size = [text_size] ?? [] %}
+{% set alignment = [alignment] ?? [] %}
+{% set margin_top = [margin_top] ?? [] %}
+{% set margin_bottom = [margin_bottom] ?? [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+{% set classes = []|merge(color)|merge(text_size)|merge(alignment)|merge(margin_top)|merge(margin_bottom)|merge(extra_classes) %}
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+{%  set attributes = attributes.addClass(classes) %}
+{% if animation %}
+  {% set attributes = attributes.setAttribute('data-aos', animation) %}
+{% endif %}
+{% if animation_duration %}
+  {% set attributes = attributes.setAttribute('data-aos-duration', animation_duration) %}
+{% endif %}
+
+<div {{ attributes.addClass('text') }}>
+	{{content}}
+</div>

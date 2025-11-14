@@ -1,0 +1,63 @@
+{% set layout_class = layout_horizontal ? ['card--horizontal'] : [] %}
+{% set align_class = align_center ? ['text-center'] : [] %}
+{% set border_color = border_color ? [border_color] : [] %}
+{% set classes = ['card']|merge(layout_class)|merge(align_class)|merge(border_color) %}
+{% set html_tag = card_clickable ? 'a' : 'div' %}
+{% set cta_tag = card_clickable ? 'div' : 'a' %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+{% if not cta_attributes %}
+  {% set cta_attributes = create_attribute() %}
+{% endif %}
+
+{% set attributes = attributes.addClass(classes) %}
+{% set cta_attributes = cta_attributes.addClass('btn btn-primary') %}
+
+{% if cta_url and card_clickable %}
+  {% set attributes = attributes.setAttribute('href', cta_url) %}
+{% endif %}
+{% if cta_url and not card_clickable %}
+  {% set cta_attributes = cta_attributes.setAttribute('href', cta_url) %}
+{% endif %}
+{% if new_tab and card_clickable %}
+  {% set attributes = attributes.setAttribute('target', '_blank') %}
+{% endif %}
+{% if new_tab and not card_clickable %}
+  {% set cta_attributes = cta_attributes.setAttribute('target', '_blank') %}
+{% endif %}
+
+{% apply spaceless %}
+  <{{ html_tag }}{{ attributes }}>
+    {# Card image #}
+    {% if image %}
+      <div class="card-image-container">
+        <img class="card-img-top" src="{{ image.src }}" loading="lazy" />
+      </div>
+    {% endif %}
+
+    <div class="card-body">
+      {# Card title #}
+      {% if title %}
+          <h3 class="card-title">{{ title }}</h3>
+      {% endif %}
+
+      {# Card text #}
+      {% if text_content or content %}
+          <div class="card-text">
+            {{ text_content }}
+            {% block content %}
+			      {% endblock %}
+          </div>
+      {% endif %}
+
+      {# CTA button #}
+      {% if cta_text %}
+          <{{cta_tag}}{{cta_attributes}}>
+            {{cta_text}}
+          </{{cta_tag}}>
+      {% endif %}
+    </div>
+  </{{ html_tag }}>
+{% endapply %}

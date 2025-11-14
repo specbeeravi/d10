@@ -1,0 +1,11 @@
+/**
+*********************
+* CKEditor overrides
+********************
+**/
+
+@use '../settings' as *;
+
+.cke_editable {
+  padding: $space;
+}

@@ -1,0 +1,248 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: One Column
+group: Columns
+status: stable
+description: Place content in a single column layout. You can adjust width, background, spacing etc.
+
+props:
+  type: object
+  required:
+    - content_width
+  properties:
+    content_width:
+      type: string
+      title: Content width
+      default: "container"
+      enum:
+        - "container"
+        - "container container-small"
+        - "container-fluid"
+      meta:enum:
+        "container": "Default"
+        "container container-small": "Smaller"
+        "container-fluid": "Full width (edge to edge)"
+      examples: ["container"]
+    bg_color:
+      type: string
+      title: Background color
+      enum:
+        - "bg-light"
+        - "bg-dark"
+        - "bg-black"
+        - "bg-white"
+        - "bg-primary"
+        - "bg-primary-subtle"
+        - "bg-secondary"
+        - "bg-secondary-subtle"
+        - "bg-success"
+        - "bg-success-subtle"
+        - "bg-danger"
+        - "bg-danger-subtle"
+        - "bg-warning"
+        - "bg-warning-subtle"
+        - "bg-info"
+        - "bg-info-subtle"
+        - "bg-light-subtle"
+        - "bg-dark-subtle"
+        - "bg-body"
+        - "bg-body-secondary"
+        - "bg-body-tertiary"
+        - "bg-transparent"
+        - "bg-gradient-red-blue"
+        - "bg-gradient-blue-red"
+        - "bg-vertical-gradient-white-grey"
+        - "bg-overlay-horizontal"
+      meta:enum:
+        "bg-light": "Light"
+        "bg-dark": "Dark"
+        "bg-black": "Black"
+        "bg-white": "White"
+        "bg-primary": "Primary color"
+        "bg-primary-subtle": "Subtle primary color"
+        "bg-secondary": "Secondary color"
+        "bg-secondary-subtle": "Subtle secondary color"
+        "bg-success": "Success"
+        "bg-success-subtle": "Subtle success"
+        "bg-danger": "Danger"
+        "bg-danger-subtle": "Subtle danger"
+        "bg-warning": "Warning"
+        "bg-warning-subtle": "Subtle warning"
+        "bg-info": "Info"
+        "bg-info-subtle": "Subtle info"
+        "bg-light-subtle": "Subtle light"
+        "bg-dark-subtle": "Subtle dark"
+        "bg-body": "Body color"
+        "bg-body-secondary": "Secondary body color"
+        "bg-body-tertiary": "Tertiary body color"
+        "bg-transparent": "Transparent"
+        "bg-gradient-red-blue": "Gradient from red to blue"
+        "bg-gradient-blue-red": "Gradient from blue to red"
+        "bg-vertical-gradient-white-grey": "Vertical gradient from white to grey"
+        "bg-overlay-horizontal": "Overlay horizontal gradient"
+    padding_top:
+      type: string
+      title: Top padding (inside this component)
+      enum:
+        - "pt-1"
+        - "pt-2"
+        - "pt-3"
+        - "pt-4"
+        - "pt-5"
+        - "pt-6"
+        - "pt-7"
+        - "pt-8"
+        - "pt-9"
+        - "pt-10"
+        - "pt-11"
+        - "pt-12"
+      meta:enum:
+        "pt-1": "1 - smallest available padding"
+        "pt-2": "2"
+        "pt-3": "3"
+        "pt-4": "4"
+        "pt-5": "5"
+        "pt-6": "6"
+        "pt-7": "7"
+        "pt-8": "8"
+        "pt-9": "9"
+        "pt-10": "10"
+        "pt-11": "11"
+        "pt-12": "12 - largest available padding"
+    padding_bottom:
+      type: string
+      title: Bottom padding (inside this component)
+      enum:
+        - "pb-1"
+        - "pb-2"
+        - "pb-3"
+        - "pb-4"
+        - "pb-5"
+        - "pb-6"
+        - "pb-7"
+        - "pb-8"
+        - "pb-9"
+        - "pb-10"
+        - "pb-11"
+        - "pb-12"
+      meta:enum:
+        "pb-1": "1 - smallest available padding"
+        "pb-2": "2"
+        "pb-3": "3"
+        "pb-4": "4"
+        "pb-5": "5"
+        "pb-6": "6"
+        "pb-7": "7"
+        "pb-8": "8"
+        "pb-9": "9"
+        "pb-10": "10"
+        "pb-11": "11"
+        "pb-12": "12 - largest available padding"
+    margin_top:
+      type: string
+      title: Top margin (between this and the previous component)
+      enum:
+        - "mt-1"
+        - "mt-2"
+        - "mt-3"
+        - "mt-4"
+        - "mt-5"
+        - "mt-6"
+        - "mt-7"
+        - "mt-8"
+        - "mt-9"
+        - "mt-10"
+        - "mt-11"
+        - "mt-12"
+      meta:enum:
+        "mt-1": "1 - smallest available margin"
+        "mt-2": "2"
+        "mt-3": "3"
+        "mt-4": "4"
+        "mt-5": "5"
+        "mt-6": "6"
+        "mt-7": "7"
+        "mt-8": "8"
+        "mt-9": "9"
+        "mt-10": "10"
+        "mt-11": "11"
+        "mt-12": "12 - largest available margin"
+    margin_bottom:
+      type: string
+      title: Bottom margin (between this and the next component)
+      enum:
+        - "mb-1"
+        - "mb-2"
+        - "mb-3"
+        - "mb-4"
+        - "mb-5"
+        - "mb-6"
+        - "mb-7"
+        - "mb-8"
+        - "mb-9"
+        - "mb-10"
+        - "mb-11"
+        - "mb-12"
+      meta:enum:
+        "mb-1": "1 - smallest available margin"
+        "mb-2": "2"
+        "mb-3": "3"
+        "mb-4": "4"
+        "mb-5": "5"
+        "mb-6": "6"
+        "mb-7": "7"
+        "mb-8": "8"
+        "mb-9": "9"
+        "mb-10": "10"
+        "mb-11": "11"
+        "mb-12": "12 - largest available margin"
+    align_center:
+      type: boolean
+      title: center align content
+      default: false
+      examples: [false]
+    animation:
+      type: string
+      title: Animation
+      description: Add animation when this component comes into view.
+      enum:
+        - fade-up
+        - fade-down
+        - fade-right
+        - fade-left
+        - zoom-in
+        - zoom-out
+        - slide-up
+        - flip-up
+        - flip-down
+        - flip-right
+        - flip-left
+    animation_duration:
+      type: integer
+      title: Animation duration
+      description: Time taken by the animation to complete (in milliseconds).
+      enum:
+        - 500
+        - 1000
+        - 1500
+        - 2000
+        - 2500
+        - 3000
+      default: 2000
+    extra_classes:
+      type: array
+      title: Extra classes
+      default: []
+      items:
+        type: "string"
+      description: Optionally add extra classes to this component.
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes
+slots:
+  content:
+    title: Content
+    description: The content.
+    examples:
+      - <p>This is my amazing content.</p>

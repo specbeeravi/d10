@@ -1,0 +1,168 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Text
+group: Basic components
+description: Add text content with optional formatting.
+
+props:
+  type: object
+  required:
+    - content
+  properties:
+    content:
+      type: string
+      title: Content
+      contentMediaType: text/html
+      x-formatting-context: block
+      description: Your text content
+      examples:
+        ["<p>Add your <strong>formatted text</strong> content here.</p>"]
+    color:
+      type: string
+      title: Text color
+      description: Select another text color than the default text color.
+      enum:
+        - text-primary
+        - text-primary-emphasis
+        - text-secondary
+        - text-secondary-emphasis
+        - text-success
+        - text-success-emphasis
+        - text-danger
+        - text-danger-emphasis
+        - text-warning
+        - text-warning-emphasis
+        - text-info
+        - text-info-emphasis
+        - text-light
+        - text-light-emphasis
+        - text-dark
+        - text-dark-emphasis
+        - text-body
+        - text-body-emphasis
+        - text-body-secondary
+        - text-body-tertiary
+        - text-black
+        - text-white
+        - text-black-50
+        - text-white-50
+    text_size:
+      type: string
+      title: Text size
+      enum:
+        - lead
+        - display-6
+        - display-5
+        - display-4
+    alignment:
+      type: string
+      title: Alignment
+      description: Set how the text should be aligned
+      enum:
+        - text-start
+        - text-center
+        - text-end
+        - center-vertically
+      "meta:enum":
+        text-start: Default (left)
+        text-center: Centered (middle)
+        text-end: Right
+        center-vertically: Centered vertically
+      examples: ["text-start"]
+    margin_top:
+      type: string
+      title: Top margin (between this and the previous component)
+      enum:
+        - "mt-1"
+        - "mt-2"
+        - "mt-3"
+        - "mt-4"
+        - "mt-5"
+        - "mt-6"
+        - "mt-7"
+        - "mt-8"
+        - "mt-9"
+        - "mt-10"
+        - "mt-11"
+        - "mt-12"
+      meta:enum:
+        "mt-1": "1 - smallest available margin"
+        "mt-2": "2"
+        "mt-3": "3"
+        "mt-4": "4"
+        "mt-5": "5"
+        "mt-6": "6"
+        "mt-7": "7"
+        "mt-8": "8"
+        "mt-9": "9"
+        "mt-10": "10"
+        "mt-11": "11"
+        "mt-12": "12 - largest available margin"
+    margin_bottom:
+      type: string
+      title: Bottom margin (between this and the next component)
+      enum:
+        - "mb-1"
+        - "mb-2"
+        - "mb-3"
+        - "mb-4"
+        - "mb-5"
+        - "mb-6"
+        - "mb-7"
+        - "mb-8"
+        - "mb-9"
+        - "mb-10"
+        - "mb-11"
+        - "mb-12"
+      meta:enum:
+        "mb-1": "1 - smallest available margin"
+        "mb-2": "2"
+        "mb-3": "3"
+        "mb-4": "4"
+        "mb-5": "5"
+        "mb-6": "6"
+        "mb-7": "7"
+        "mb-8": "8"
+        "mb-9": "9"
+        "mb-10": "10"
+        "mb-11": "11"
+        "mb-12": "12 - largest available margin"
+    animation:
+      type: string
+      title: Animation
+      description: Add animation when this component comes into view.
+      enum:
+        - fade-up
+        - fade-down
+        - fade-right
+        - fade-left
+        - zoom-in
+        - zoom-out
+        - slide-up
+        - flip-up
+        - flip-down
+        - flip-right
+        - flip-left
+    animation_duration:
+      type: integer
+      title: Animation duration
+      description: Time taken by the animation to complete (in milliseconds).
+      enum:
+        - 500
+        - 1000
+        - 1500
+        - 2000
+        - 2500
+        - 3000
+      default: 2000
+    extra_classes:
+      type: array
+      title: Extra classes
+      default: []
+      items:
+        type: "string"
+      description: Optionally add extra classes to this component.
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes

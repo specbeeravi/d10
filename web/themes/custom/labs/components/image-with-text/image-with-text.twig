@@ -1,0 +1,70 @@
+{% set html_tag = url ? 'a' : 'div' %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+
+{%
+  set classes = [
+    'image-with-text',
+    'position-relative',
+    url ? 'with-link',
+    overflow_hidden ? 'overflow-hidden',
+  ]
+%}
+
+{% set attributes = attributes.addClass(classes) %}
+
+{% if url %}
+  {% set attributes = attributes.setAttribute('href', url) %}
+{% endif %}
+
+
+{% set wrapper_attributes = create_attribute() %}
+{%
+  set wrapper_classes = [
+    'position-relative',
+    not overflow_hidden ? 'overflow-hidden',
+  ]
+%}
+{% set wrapper_attributes = wrapper_attributes.addClass(wrapper_classes) %}
+
+{% set content_attributes = create_attribute() %}
+{%
+  set content_classes = [
+    'carousel-caption',
+    'image-with-text__content',
+    show_arrow ? 'with-arrow',
+  ]
+%}
+{% set content_attributes = content_attributes.addClass(content_classes) %}
+
+{% apply spaceless %}
+  <{{ html_tag }}{{ attributes }}>
+    <div{{ wrapper_attributes }}>
+      {# The image #}
+      <div class="image-with-text__image">
+        <img src="{{image.src}}"alt="{{image.alt}}">
+      </div>
+      {# Content / text on top of image #}
+      <div{{ content_attributes }}>
+        <div class="image-with-text__text-on-image">
+          {% block content %}
+		      {% endblock %}
+        </div>
+        {# Arrow if its a link #}
+					{% if url and show_arrow %}
+						<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="arrow-right-white" viewBox="0 0 16 16">
+							<path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+						</svg>
+						{# <span class="icon arrow-right-white"></span> #}
+					{% endif %}
+      </div>
+      {# Overlay #}
+				{% if show_overlay %}
+					<div class="image-with-text__overlay"></div>
+				{% endif %}
+    </div>
+    
+  </{{ html_tag }}>
+{% endapply %}

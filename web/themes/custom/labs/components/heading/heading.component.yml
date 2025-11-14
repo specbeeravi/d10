@@ -1,0 +1,186 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Heading
+group: Basic components
+description: "All HTML headings, `<h1>` through `<h6>`, are available."
+
+props:
+  type: object
+  properties:
+    content:
+      type: string
+      title: Content
+      description: The content of your heading.
+      examples:
+        - This is an amazing heading
+        - Welcome to our website
+        - Contact us
+    html_tag:
+      type: string
+      title: HTML tag
+      description: HTML header tag (h1, h2, h3, h4, h5, h6)
+      default: h1
+      enum:
+        - h1
+        - h2
+        - h3
+        - h4
+        - h5
+        - h6
+      examples: [h1, h2, h3]
+    display:
+      type: string
+      title: Display Heading
+      description: When you need a heading to stand out, consider using a display heading—a larger, slightly more opinionated heading style.
+      enum:
+        - display-1
+        - display-2
+        - display-3
+        - display-4
+        - display-5
+        - display-6
+    url:
+      type: string
+      format: uri-reference
+      title: URL Link
+      description: Simple URL link for heading.
+    color:
+      type: string
+      title: Text color
+      description: Select another text color than the default text color.
+      enum:
+        - text-primary
+        - text-primary-emphasis
+        - text-secondary
+        - text-secondary-emphasis
+        - text-success
+        - text-success-emphasis
+        - text-danger
+        - text-danger-emphasis
+        - text-warning
+        - text-warning-emphasis
+        - text-info
+        - text-info-emphasis
+        - text-light
+        - text-light-emphasis
+        - text-dark
+        - text-dark-emphasis
+        - text-body
+        - text-body-emphasis
+        - text-body-secondary
+        - text-body-tertiary
+        - text-black
+        - text-white
+        - text-black-50
+        - text-white-50
+    alignment:
+      type: string
+      title: Alignment
+      description: Set how the text should be aligned
+      enum:
+        - text-start
+        - text-center
+        - text-end
+        - center-vertically
+      "meta:enum":
+        text-start: Default (left)
+        text-center: Centered (middle)
+        text-end: Right
+        center-vertically: Centered vertically
+    margin_top:
+      type: string
+      title: Top margin (between this and the previous component)
+      enum:
+        - "mt-1"
+        - "mt-2"
+        - "mt-3"
+        - "mt-4"
+        - "mt-5"
+        - "mt-6"
+        - "mt-7"
+        - "mt-8"
+        - "mt-9"
+        - "mt-10"
+        - "mt-11"
+        - "mt-12"
+      meta:enum:
+        "mt-1": "1 - smallest available margin"
+        "mt-2": "2"
+        "mt-3": "3"
+        "mt-4": "4"
+        "mt-5": "5"
+        "mt-6": "6"
+        "mt-7": "7"
+        "mt-8": "8"
+        "mt-9": "9"
+        "mt-10": "10"
+        "mt-11": "11"
+        "mt-12": "12 - largest available margin"
+    margin_bottom:
+      type: string
+      title: Bottom margin (between this and the next component)
+      enum:
+        - "mb-1"
+        - "mb-2"
+        - "mb-3"
+        - "mb-4"
+        - "mb-5"
+        - "mb-6"
+        - "mb-7"
+        - "mb-8"
+        - "mb-9"
+        - "mb-10"
+        - "mb-11"
+        - "mb-12"
+      meta:enum:
+        "mb-1": "1 - smallest available margin"
+        "mb-2": "2"
+        "mb-3": "3"
+        "mb-4": "4"
+        "mb-5": "5"
+        "mb-6": "6"
+        "mb-7": "7"
+        "mb-8": "8"
+        "mb-9": "9"
+        "mb-10": "10"
+        "mb-11": "11"
+        "mb-12": "12 - largest available margin"
+    animation:
+      type: string
+      title: Animation
+      description: Add animation when this component comes into view.
+      enum:
+        - fade-up
+        - fade-down
+        - fade-right
+        - fade-left
+        - zoom-in
+        - zoom-out
+        - slide-up
+        - flip-up
+        - flip-down
+        - flip-right
+        - flip-left
+    animation_duration:
+      type: integer
+      title: Animation duration
+      description: Time taken by the animation to complete (in milliseconds).
+      enum:
+        - 500
+        - 1000
+        - 1500
+        - 2000
+        - 2500
+        - 3000
+      default: 2000
+    extra_classes:
+      type: array
+      title: Extra classes
+      default: []
+      items:
+        type: "string"
+      description: Optionally add extra classes to this component.
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes

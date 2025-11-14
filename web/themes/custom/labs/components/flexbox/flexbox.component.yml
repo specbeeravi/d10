@@ -1,0 +1,90 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Flexbox
+group: Structure components
+status: stable
+description: Place content in a flexbox
+
+props:
+  type: object
+  required:
+    - flex_type
+  properties:
+    flex_type:
+      type: string
+      title: Flexbox type
+      default: "d-flex"
+      enum:
+        - "d-flex"
+        - "d-inline-flex"
+      meta:enum:
+        "d-flex": "Default"
+        "d-inline-flex": "Inline"
+      examples: ["d-flex"]
+    flex_direction:
+      type: string
+      title: Direction
+      enum:
+        - "flex-row"
+        - "flex-row-reverse"
+        - "flex-column"
+        - "flex-column-reverse"
+      meta:enum:
+        "flex-row": "Row"
+        "flex-row-reverse": "Row - reversed"
+        "flex-column": "Column"
+        "flex-column-reverse": "Column - reversed"
+    justify_content:
+      type: string
+      title: Justify content
+      enum:
+        - "justify-content-start"
+        - "justify-content-end"
+        - "justify-content-center"
+        - "justify-content-between"
+        - "justify-content-around"
+        - "justify-content-evenly"
+      meta:enum:
+        "justify-content-start": "Start"
+        "justify-content-end": "End"
+        "justify-content-center": "Center"
+        "justify-content-between": "Between"
+        "justify-content-around": "Around"
+        "justify-content-evenly": "Evenly"
+    align_items:
+      type: string
+      title: Align items
+      enum:
+        - "align-items-start"
+        - "align-items-end"
+        - "align-items-center"
+        - "align-items-baseline"
+        - "align-items-stretch"
+      meta:enum:
+        "align-items-start": "Start"
+        "align-items-end": "End"
+        "align-items-center": "Center"
+        "align-items-baseline": "Baseline"
+        "align-items-stretch": "Stretch"
+    flex_wrap:
+      type: boolean
+      title: Wrap
+      default: false
+      examples: [false]
+    extra_classes:
+      type: array
+      title: Extra classes
+      default: []
+      items:
+        type: "string"
+      description: Optionally add extra classes to this component.
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes
+slots:
+  content:
+    title: Content
+    description: The content.
+    examples:
+      - <p>This is my amazing content.</p>

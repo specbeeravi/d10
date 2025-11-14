@@ -1,0 +1,36 @@
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+
+{% if not content_attributes %}
+  {% set content_attributes = create_attribute() %}
+{% endif %}
+
+{% set bg_color = [bg_color] ?? [] %}
+{% set padding_top = [padding_top] ?? [] %}
+{% set padding_bottom = [padding_bottom] ?? [] %}
+{% set margin_top = [margin_top] ?? [] %}
+{% set margin_bottom = [margin_bottom] ?? [] %}
+{% set align_class = align_center ? ['text-center'] : [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+
+{% set classes = []|merge(bg_color)|merge(padding_top)|merge(padding_bottom)|merge(margin_top)|merge(margin_bottom)|merge(align_class)|merge(extra_classes) %}
+
+{% set attributes = attributes.addClass(classes) %}
+
+{% set content_attributes = content_attributes.addClass(content_width) %}
+{% if animation %}
+  {% set content_attributes = content_attributes.setAttribute('data-aos', animation) %}
+{% endif %}
+{% if animation_duration %}
+  {% set content_attributes = content_attributes.setAttribute('data-aos-duration', animation_duration) %}
+{% endif %}
+
+{% apply spaceless %}
+<div{{ attributes }}>
+  <div{{content_attributes}}>
+    {% block content %}
+    {% endblock %}
+  </div>
+</div>
+{% endapply %}

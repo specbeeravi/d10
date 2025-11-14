@@ -1,0 +1,16 @@
+name: Card grid inline
+description: This shows a series of cards in the slots using inline templates
+props:
+  title: 'My card grid with inline templates'
+  description: 'This is a demo card grid that reuses demos to generate the cards in the grid. The cards are defined as inline templates with twig render arrays.'
+slots:
+  cards: "{{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.image' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.video' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.vimeo_video' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.image' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.video' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.vimeo_video' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.image' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.video' } }}
+          {{ {'#theme': 'styleguide_demo', '#demo': 'sdc_styleguide_demo_components:card.demo.vimeo_video' } }}
+          "

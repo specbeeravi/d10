@@ -1,0 +1,43 @@
+{% set extra_classes = fullscreen ? ['hero--fullscreen'] : [] %}
+{% set classes = ['hero']|merge(extra_classes) %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+{% set attributes = attributes.addClass(classes) %}
+
+<div {{ attributes }}>
+
+	{# Background image #}
+	{% if bg_image %}
+		<div class="hero__bg {{bg_position}}">
+			<img src="{{bg_image.src}}" alt="{{bg_image.alt}}" class="{{parallax_effect ? 'parallax__image'}}" loading="{{disable_lazy_loading ? 'eager' : 'lazy'}}" fetchpriority="{{disable_lazy_loading ? 'high' : 'auto'}}" />
+		</div>
+	{% endif %}
+
+	{# Overlay #}
+	{% if show_overlay %}
+		<div class="hero__overlay"></div>
+	{% endif %}
+
+  	<div class="hero__content-container container">
+		{# content #}
+		<div class="hero__content">
+			{% block content %}
+			{% endblock %}
+		</div>
+	</div>
+
+	{% if enable_scrolldown %}
+		<button type="button" class="btn btn-primary rounded-circle btn-sm hero__scrolldown text-white" data-scroll-to=".hero-bottom" aria-label="scroll down">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewbox="0 0 16 16">
+				<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+			</svg>
+		</button>
+	{% endif %}
+  
+</div>
+
+{% if enable_scrolldown %}
+	<div class="hero-bottom"></div>
+{% endif %}

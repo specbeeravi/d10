@@ -1,0 +1,27 @@
+{% set color = [color] ?? [] %}
+{% set text_size = [text_size] ?? [] %}
+{% set alignment = [alignment] ?? [] %}
+{% set margin_top = [margin_top] ?? [] %}
+{% set margin_bottom = [margin_bottom] ?? [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+{% set classes = []|merge(color)|merge(text_size)|merge(alignment)|merge(margin_top)|merge(margin_bottom)|merge(extra_classes) %}
+{% if not attributes %}
+	{% set attributes = create_attribute() %}
+{% endif %}
+{%  set attributes = attributes.addClass(classes) %}
+{% if animation %}
+	{% set attributes = attributes.setAttribute('data-aos', animation) %}
+{% endif %}
+{% if animation_duration %}
+	{% set attributes = attributes.setAttribute('data-aos-duration', animation_duration) %}
+{% endif %}
+
+{% set elementid = 'collapsecontent-' ~ canvas_uuid %}
+<div class="collapse-element">
+	<a class="collapse-title" data-bs-toggle="collapse" href="#{{elementid}}" role="button" aria-expanded="false" aria-controls="{{elementid}}">
+		{{title}}
+	</a>
+	<div class="collapse collapse-content" id="{{elementid}}">
+		{{content}}
+	</div>
+</div>

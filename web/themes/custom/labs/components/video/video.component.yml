@@ -1,0 +1,69 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json'
+
+name: Video
+group: Advanced components
+description: Add a video
+
+props:
+  type: object
+  required:
+    - video
+  properties:
+    video:
+      title: Video
+      type: object
+      $ref: json-schema-definitions://canvas.module/video
+      description: The video object.
+      examples:
+        - src: https://media.istockphoto.com/id/1340051874/video/aerial-top-down-view-of-a-container-cargo-ship.mp4?s=mp4-640x640-is&k=20&c=5qPpYI7TOJiOYzKq9V2myBvUno6Fq2XM3ITPGFE8Cd8=
+          poster: https://example.com/600x400.png
+    poster:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: 'Poster Image'
+      description: Image to be used as the video placeholder.
+    aspect_ratio:
+      type: string
+      title: Aspect Ratio
+      description: The aspect ratio of the video (e.g., "16/9").
+      default: 4/1
+    object_fit:
+      type: string
+      title: Fit video into available space
+      description: Decide to shrink and display the whole video, or fill the available space.
+      enum:
+        - cover
+        - contain
+      'meta:enum':
+        cover: Cover - video gets cut to fill the exact aspect ratio
+        contain: Contain - video gets shrunk so it fits into the given space maintaining its original aspect ratio.
+    show_controls:
+      type: boolean
+      title: Show controls
+      description: Whether video control buttons should be displayed.
+      default: false
+    autoplay:
+      type: boolean
+      title: Autoplay on page load
+      description: Whether the video should automatically play when the page is loaded.
+      default: true
+    play_when_visible:
+      type: boolean
+      title: Play when visible
+      description: Only autoplay when the video is scrolled into view.
+      default: true
+    muted:
+      type: boolean
+      title: Muted
+      description: Whether the video should be muted.
+      default: true
+    loop:
+      type: boolean
+      title: Loop
+      description: Whether the video should loop.
+      default: true
+    is_hero:
+      type: boolean
+      title: Is Hero Video
+      description: If the video is used in a hero banner, hero-specific classes and attributes are applied.
+      default: false

@@ -1,0 +1,71 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Photosphere
+group: Advanced components
+description: Add a 360° image
+
+props:
+  type: object
+  required:
+    - image
+  properties:
+    image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: 'Image'
+      examples:
+        - src: strawberries-360.jpg
+          alt: '360° image of strawberries in a greenhouse'
+          width: 6720
+          height: 3360
+    animation:
+      type: string
+      title: Animation
+      description: Add animation when this component comes into view.
+      enum:
+        - fade-up
+        - fade-down
+        - fade-right
+        - fade-left
+        - zoom-in
+        - zoom-out
+        - slide-up
+        - flip-up
+        - flip-down
+        - flip-right
+        - flip-left
+    animation_duration:
+      type: integer
+      title: Animation duration
+      description: Time taken by the animation to complete (in milliseconds).
+      enum:
+        - 500
+        - 1000
+        - 1500
+        - 2000
+        - 2500
+        - 3000
+      default: 2000
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes
+
+libraryOverrides:
+  js:
+    https://cdn.jsdelivr.net/npm/three/build/three.min.js:
+      { type: external, minified: true, attributes: { crossorigin: anonymous } }
+    https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.js:
+      { type: external, minified: true, attributes: { crossorigin: anonymous } }
+    photosphere.js: {}
+  css:
+    theme:
+      https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css:
+        {
+          type: external,
+          minified: true,
+          attributes: { crossorigin: anonymous },
+        }
+  dependencies:
+    - core/drupal
+    - core/once

@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the Labs theme.
+ */
+
+use Drupal\user\Entity\User;
+use Drupal\user\RoleInterface;
+
+/**
+ * Implements template_preprocess_page().
+ */
+function labs_preprocess_page(&$variables) {
+  // Load the library specific for Admin users.
+  if (User::load(\Drupal::currentUser()->id())->hasRole(RoleInterface::AUTHENTICATED_ID)) {
+    $variables['#attached']['library'][] = 'labs/admin';
+  }
+}
+
+/**
+ * Implements template_preprocess_field().
+ */
+function labs_preprocess_field(&$variables) {
+  // Add additional values for rendering specific classes 
+  $entity_type = $variables['element']['#entity_type'];
+  if ($entity_type) {
+    $field_name = $variables['element']['#field_name'];
+    $variables['field_name_entity_cls'] = str_replace('_', '-', str_replace('field_', '', $field_name)) . '-' . str_replace('_', '-', $entity_type);
+  }
+}

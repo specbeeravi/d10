@@ -1,0 +1,73 @@
+{% set col1_class = 'col-md-6 col-xl-3' %}
+{% set col2_class = 'col-md-6 col-xl-3' %}
+{% set col3_class = 'col-md-6 col-xl-3' %}
+{% set col4_class = 'col-md-6 col-xl-3' %}
+{% if column_widths == '4 4 2 2' %}
+    {% set col1_class = 'col-md-4' %}
+    {% set col2_class = 'col-md-4' %}
+    {% set col3_class = 'col-md-2' %}
+    {% set col4_class = 'col-md-2' %}
+{% endif %}
+{% if column_widths == '2 4 2 4' %}
+    {% set col1_class = 'col-md-2' %}
+    {% set col2_class = 'col-md-4' %}
+    {% set col3_class = 'col-md-2' %}
+    {% set col4_class = 'col-md-5' %}
+{% endif %}
+{% if column_widths == '2 4 4 2' %}
+    {% set col1_class = 'col-md-2' %}
+    {% set col2_class = 'col-md-4' %}
+    {% set col3_class = 'col-md-4' %}
+    {% set col4_class = 'col-md-2' %}
+{% endif %}
+{% if column_widths == '4 2 2 4' %}
+    {% set col1_class = 'col-md-4' %}
+    {% set col2_class = 'col-md-2' %}
+    {% set col3_class = 'col-md-2' %}
+    {% set col4_class = 'col-md-4' %}
+{% endif %}
+{% if column_widths == '6 6 6 6' %}
+    {% set col1_class = 'col-md-6' %}
+    {% set col2_class = 'col-md-6' %}
+    {% set col3_class = 'col-md-6' %}
+    {% set col4_class = 'col-md-6' %}
+{% endif %}
+
+{% set bg_color = [bg_color] ?? [] %}
+{% set padding_top = [padding_top] ?? [] %}
+{% set padding_bottom = [padding_bottom] ?? [] %}
+{% set margin_top = [margin_top] ?? [] %}
+{% set margin_bottom = [margin_bottom] ?? [] %}
+{% set extra_classes = extra_classes ? extra_classes : [] %}
+
+{% set classes = []|merge(bg_color)|merge(padding_top)|merge(padding_bottom)|merge(margin_top)|merge(margin_bottom)|merge(extra_classes) %}
+
+{% if not attributes %}
+  {% set attributes = create_attribute() %}
+{% endif %}
+{% set attributes = attributes.addClass(classes) %}
+
+{% apply spaceless %}
+<div{{ attributes }}>
+  <div class="{{content_width}}">
+    <div class="row">
+      <div class="{{ col1_class }}">
+        {% block column_one %}
+        {% endblock %}
+      </div>
+      <div class="{{ col2_class }}">
+        {% block column_two %}
+        {% endblock %}
+      </div>
+      <div class="{{ col3_class }}">
+        {% block column_three %}
+        {% endblock %}
+      </div>
+      <div class="{{ col4_class }}">
+        {% block column_four %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endapply %}

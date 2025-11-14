@@ -1,0 +1,79 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Hero
+group: Advanced components
+description: A Hero section with inline styles for testing purposes
+
+props:
+  type: object
+  properties:
+    bg_image:
+      $ref: json-schema-definitions://canvas.module/image
+      type: object
+      title: Image
+      description: The image to use.
+      examples:
+        - src: "demo-bg.webp"
+          width: 1296
+          height: 600
+          alt: "Demo image: Bali - Indonesia"
+    bg_position:
+      type: string
+      title: Background position
+      enum:
+        - bg-center
+        - bg-top
+        - bg-bottom
+      "meta:enum":
+        bg-center: Centered (top and bottom of image may not be visible)
+        bg-top: Top (Bottom of image may not be visible)
+        bg-bottom: Bottom (Top of image may not be visible)
+      examples: ["bg-center"]
+    show_overlay:
+      type: boolean
+      title: Overlay
+      description: Darken the image for better text readability by adding a black overlay on top of the image.
+      default: false
+      examples: [true]
+    parallax_effect:
+      type: boolean
+      title: Enable parallax effect
+      description: The parallax effect moves the background image up while scrolling down
+      default: false
+      examples: [false]
+    fullscreen:
+      type: boolean
+      title: Fullscreen
+      description: Check to create a large hero that vertically fills the screen.
+      default: false
+      examples: [false]
+    enable_scrolldown:
+      type: boolean
+      title: Add a scroll down button on the bottom
+      description: Adds a button in the middle of the bottom of the hero.
+      default: false
+      examples: [false]
+    disable_lazy_loading:
+      type: boolean
+      title: Disable lazy loading
+      description: Only check this box for images that are shown above the fold, so for images that are visible when opening the page.
+      default: true
+      examples: [true]
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes
+# Create a slot for the content inside the hero so users can add headings, text, buttons, etc.
+slots:
+  content:
+    title: Content
+    description: The hero content.
+    examples:
+      - <h1>Holding Out for a Hero</h1><p class="lead">'til the end of the night</p><a class="btn btn-primary" href="https://www.azlyrics.com/lyrics/bonnietyler/holdingoutforahero.html" target="_blank">Learn More</a>
+libraryOverrides:
+  dependencies:
+    - core/drupal
+    - core/once
+  js:
+    parallax.js: {}
+    scroll-to.js: {}

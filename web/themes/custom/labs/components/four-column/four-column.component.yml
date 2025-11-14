@@ -1,0 +1,237 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+
+name: Four Columns
+group: Columns
+status: stable
+description: A four column layout component with adjustable column widths.
+
+props:
+  type: object
+  required:
+    - column_widths
+    - content_width
+  properties:
+    column_widths:
+      type: string
+      title: Width of the columns
+      default: "3 3 3 3"
+      enum:
+        - "3 3 3 3"
+        - "4 4 2 2"
+        - "2 4 2 4"
+        - "2 4 4 2"
+        - "4 2 2 4"
+        - "6 6 6 6"
+      meta:enum:
+        "3 3 3 3": "Four equal columns"
+      examples: ["3 3 3 3", "2 4 4 2"]
+    content_width:
+      type: string
+      title: Content width
+      default: "container"
+      enum:
+        - "container"
+        - "container container-small"
+        - "container-fluid"
+      meta:enum:
+        "container": "Default"
+        "container container-small": "Smaller"
+        "container-fluid": "Full width (edge to edge)"
+      examples: ["container"]
+    bg_color:
+      type: string
+      title: Background color
+      enum:
+        - "bg-light"
+        - "bg-dark"
+        - "bg-black"
+        - "bg-white"
+        - "bg-primary"
+        - "bg-primary-subtle"
+        - "bg-secondary"
+        - "bg-secondary-subtle"
+        - "bg-success"
+        - "bg-success-subtle"
+        - "bg-danger"
+        - "bg-danger-subtle"
+        - "bg-warning"
+        - "bg-warning-subtle"
+        - "bg-info"
+        - "bg-info-subtle"
+        - "bg-light-subtle"
+        - "bg-dark-subtle"
+        - "bg-body"
+        - "bg-body-secondary"
+        - "bg-body-tertiary"
+        - "bg-transparent"
+      meta:enum:
+        "bg-light": "Light"
+        "bg-dark": "Dark"
+        "bg-black": "Black"
+        "bg-white": "White"
+        "bg-primary": "Primary color"
+        "bg-primary-subtle": "Subtle primary color"
+        "bg-secondary": "Secondary color"
+        "bg-secondary-subtle": "Subtle secondary color"
+        "bg-success": "Success"
+        "bg-success-subtle": "Subtle success"
+        "bg-danger": "Danger"
+        "bg-danger-subtle": "Subtle danger"
+        "bg-warning": "Warning"
+        "bg-warning-subtle": "Subtle warning"
+        "bg-info": "Info"
+        "bg-info-subtle": "Subtle info"
+        "bg-light-subtle": "Subtle light"
+        "bg-dark-subtle": "Subtle dark"
+        "bg-body": "Body color"
+        "bg-body-secondary": "Secondary body color"
+        "bg-body-tertiary": "Tertiary body color"
+        "bg-transparent": "Transparent"
+    padding_top:
+      type: string
+      title: Top padding (inside this component)
+      enum:
+        - "pt-1"
+        - "pt-2"
+        - "pt-3"
+        - "pt-4"
+        - "pt-5"
+        - "pt-6"
+        - "pt-7"
+        - "pt-8"
+        - "pt-9"
+        - "pt-10"
+        - "pt-11"
+        - "pt-12"
+      meta:enum:
+        "pt-1": "1 - smallest available padding"
+        "pt-2": "2"
+        "pt-3": "3"
+        "pt-4": "4"
+        "pt-5": "5"
+        "pt-6": "6"
+        "pt-7": "7"
+        "pt-8": "8"
+        "pt-9": "9"
+        "pt-10": "10"
+        "pt-11": "11"
+        "pt-12": "12 - largest available padding"
+    padding_bottom:
+      type: string
+      title: Bottom padding (inside this component)
+      enum:
+        - "pb-1"
+        - "pb-2"
+        - "pb-3"
+        - "pb-4"
+        - "pb-5"
+        - "pb-6"
+        - "pb-7"
+        - "pb-8"
+        - "pb-9"
+        - "pb-10"
+        - "pb-11"
+        - "pb-12"
+      meta:enum:
+        "pb-1": "1 - smallest available padding"
+        "pb-2": "2"
+        "pb-3": "3"
+        "pb-4": "4"
+        "pb-5": "5"
+        "pb-6": "6"
+        "pb-7": "7"
+        "pb-8": "8"
+        "pb-9": "9"
+        "pb-10": "10"
+        "pb-11": "11"
+        "pb-12": "12 - largest available padding"
+    margin_top:
+      type: string
+      title: Top margin (between this and the previous component)
+      enum:
+        - "mt-1"
+        - "mt-2"
+        - "mt-3"
+        - "mt-4"
+        - "mt-5"
+        - "mt-6"
+        - "mt-7"
+        - "mt-8"
+        - "mt-9"
+        - "mt-10"
+        - "mt-11"
+        - "mt-12"
+      meta:enum:
+        "mt-1": "1 - smallest available margin"
+        "mt-2": "2"
+        "mt-3": "3"
+        "mt-4": "4"
+        "mt-5": "5"
+        "mt-6": "6"
+        "mt-7": "7"
+        "mt-8": "8"
+        "mt-9": "9"
+        "mt-10": "10"
+        "mt-11": "11"
+        "mt-12": "12 - largest available margin"
+    margin_bottom:
+      type: string
+      title: Bottom margin (between this and the next component)
+      enum:
+        - "mb-1"
+        - "mb-2"
+        - "mb-3"
+        - "mb-4"
+        - "mb-5"
+        - "mb-6"
+        - "mb-7"
+        - "mb-8"
+        - "mb-9"
+        - "mb-10"
+        - "mb-11"
+        - "mb-12"
+      meta:enum:
+        "mb-1": "1 - smallest available margin"
+        "mb-2": "2"
+        "mb-3": "3"
+        "mb-4": "4"
+        "mb-5": "5"
+        "mb-6": "6"
+        "mb-7": "7"
+        "mb-8": "8"
+        "mb-9": "9"
+        "mb-10": "10"
+        "mb-11": "11"
+        "mb-12": "12 - largest available margin"
+    extra_classes:
+      type: array
+      title: Extra classes
+      default: []
+      items:
+        type: "string"
+      description: Optionally add extra classes to this component.
+    attributes:
+      type: Drupal\Core\Template\Attribute
+      name: Attributes
+      title: Attributes
+slots:
+  column_one:
+    title: Column One
+    description: The contents of the first column.
+    examples:
+      - <p>This is column 1 content</p>
+  column_two:
+    title: Column Two
+    description: The contents of the second column.
+    examples:
+      - <p>This is column 2 content</p>
+  column_three:
+    title: Column Three
+    description: The contents of the third column.
+    examples:
+      - <p>This is column 3 content</p>
+  column_four:
+    title: Column Three
+    description: The contents of the fourth column.
+    examples:
+      - <p>This is column 4 content</p>

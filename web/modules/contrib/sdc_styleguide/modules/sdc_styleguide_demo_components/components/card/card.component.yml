@@ -1,0 +1,29 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.2.x/core/modules/sdc/src/metadata.schema.json
+
+name: Card
+props:
+  type: object
+
+  required:
+    - title
+
+  properties:
+    title:
+      description: The card title
+      title: Title
+      type: string
+
+    date:
+      description: The card date
+      title: Date
+      type: string
+
+slots:
+  media:
+    description: Media shown on the card
+    title: Media
+
+libraryOverrides:
+  dependencies:
+    - core/jquery
+    - sdc_styleguide_demo_components/tailwind

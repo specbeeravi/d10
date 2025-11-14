@@ -1,0 +1,28 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.2.x/core/modules/sdc/src/metadata.schema.json
+
+name: Card Grid
+props:
+  type: object
+
+  required:
+    - title
+
+  properties:
+    title:
+      description: The card title
+      title: Title
+      type: string
+
+    description:
+      description: A short description after the title
+      title: Description
+      type: string
+
+slots:
+  cards:
+    description: The list of cards
+    title: Cards
+
+libraryOverrides:
+  dependencies:
+    - sdc_styleguide_demo_components/tailwind
