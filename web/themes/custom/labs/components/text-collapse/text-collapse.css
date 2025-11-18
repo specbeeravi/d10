@@ -1,0 +1,24 @@
+.collapse-element {
+  margin-bottom: 1em;
+}
+.collapse-title {
+  display: block;
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  width: 100%;
+  position: relative;
+  padding: 15px 15px 15px 40px;
+  &::before {
+    content: "+";
+    font-weight: bold;
+    font-size: 30px;
+    position: absolute;
+    left: 14px;
+    top: 4px;
+  }
+}
+
+.collapse-content {
+  background-color: var(--bs-secondary-bg);
+  padding: 15px;
+}

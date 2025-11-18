@@ -1,0 +1,95 @@
+.image-with-text {
+  color: inherit;
+}
+a.image-with-text {
+  display: block;
+}
+.image-with-text__image {
+  z-index: 0;
+}
+.image-with-text__content {
+  z-index: 2;
+  left: 0;
+  right: unset;
+  bottom: 0;
+  padding: 1.2em 1.5em;
+  line-height: 1em;
+  width: 100%;
+}
+.image-with-text__content.with-arrow {
+  display: flex;
+  justify-content: space-between;
+}
+.image-with-text__text-on-image {
+  width: 100%;
+  min-height: 1em;
+}
+.image-with-text__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    0deg,
+    rgba(43, 46, 47, 0.6) 0%,
+    rgba(43, 46, 47, 0) 39.12%
+  );
+  z-index: 1;
+}
+.image-with-text__text-below-image {
+  margin-top: 2em;
+}
+.image-with-text h3 {
+  margin: 0;
+  line-height: 1em;
+  color: inherit;
+}
+.image-with-text.with-link img {
+  width: 100%;
+}
+.image-with-text.with-link img,
+.image-with-text.with-link .arrow-right-white {
+  transition: transform 0.4s ease;
+}
+.image-with-text.with-link:hover img {
+  transform: scale(1.1);
+}
+.image-with-text.with-link:hover .arrow-right-white {
+  transform: translateX(10px);
+}
+
+.image-with-text:hover {
+  color: inherit;
+}
+
+.carousel-caption.image-with-text__content {
+  text-align: inherit;
+  color: inherit;
+}
+
+.swiper-slide.image-with-text {
+  width: 507px;
+}
+.swiper-slide.image-with-text img {
+  width: 100%;
+}
+
+.w-100 .image-with-text__content {
+  padding: 3em;
+}
+
+.w-100 .image-with-text h3 {
+  font-size: 40px;
+  margin-bottom: 0.5em;
+}
+
+.w-100 .image-with-text__text-on-image {
+  max-width: 440px;
+}
+
+.image-with-text .carousel-caption {
+  left: 0;
+  right: unset;
+  width: 100%;
+}

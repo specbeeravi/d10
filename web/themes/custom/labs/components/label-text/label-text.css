@@ -1,0 +1,22 @@
+.label-text {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  line-height: 1em;
+  &.line-top {
+    border-top: 1px solid var(--bs-gray-300);
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+  }
+}
+
+.label-text__label {
+  vertical-align: top;
+  width: 150px;
+  color: #6c757d;
+  flex-shrink: 0;
+}
+
+.label-text__text {
+  flex-grow: 1;
+}
