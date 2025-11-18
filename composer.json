@@ -22,6 +22,7 @@
         "drupal/core-composer-scaffold": "^10.5",
         "drupal/core-project-message": "^10.5",
         "drupal/core-recommended": "^10.5",
+        "drupal/token": "^1.16",
         "drupal/webform": "^6.2",
         "drupal/webform_booking": "^1.1",
         "drush/drush": "^13.6"
